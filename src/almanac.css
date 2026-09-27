@@ -1201,6 +1201,7 @@ html:has(.nav-toggle:checked) {
   gap: 28px 20px;
   margin: 24px auto;
 }
+.pic-grid[data-cols="1"] { --cols: 1; }
 .pic-grid[data-cols="3"] { --cols: 3; }
 .pic-grid[data-cols="4"] { --cols: 4; }
 .pic-grid .cell {

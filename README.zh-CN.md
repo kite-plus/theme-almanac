@@ -33,6 +33,7 @@ Almanac 是「年鉴 / 历书」——一本按年份记下日子和小事的书
 |---|---|---|
 | `about` | 个人资料、正文和社交链接 | 无 |
 | `projects` | 按状态分组的项目；设置了 `github_user` 时显示 GitHub 数据 | `projects` |
+| `project` | 一个项目自己的页面，项目页的条目用 `link` 指过来 | `status`、`summary`、`tech`、`repo`、`homepage`、`demo` |
 | `douban` | 两个书架：书和影 | `books`、`movies` |
 | `moments` | 按天分组的动态 | `moments` |
 | `links` | 供别人复制的本站名片、申请方式和友链 | `groups`、`apply` |

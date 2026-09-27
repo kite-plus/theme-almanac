@@ -25,6 +25,10 @@ layouts:
     label: Projects
     description: The projects listed in the page's front matter, grouped by status, with live GitHub numbers when a GitHub user is set.
     types: [page]
+  - name: project
+    label: Project
+    description: One project's own page, with its status, tech, GitHub numbers and links over the page's text.
+    types: [page]
   - name: douban
     label: Books and films
     description: The books and films listed in the page's front matter, on two shelves.

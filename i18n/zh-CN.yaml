@@ -200,6 +200,9 @@ theme:
     projects:
       label: 项目
       description: 页面 front matter 里的项目，按状态分组；设置了 GitHub 用户时显示实时的仓库数据。
+    project:
+      label: 项目详情
+      description: 一个项目自己的页面：状态、技术栈、GitHub 数据和链接在上，正文在下。
     douban:
       label: 书影
       description: 页面 front matter 里的书和电影，分成两个书架。

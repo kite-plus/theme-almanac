@@ -19,6 +19,7 @@ projects:
     tech: [Go, SQLite, Vue]
     repo: "https://github.com/yourname/tideline"
     homepage: "https://tideline.dev"
+    link: /tideline/
   - title: cargo-zen
     status: maintained
     summary: 一个 Rust 工作区脚手架 CLI —— 把多 crate 项目的常见模板和命令收成一条龙。

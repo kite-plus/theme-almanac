@@ -55,6 +55,7 @@ editor. The data a layout draws is written in the same front matter:
 |---|---|---|
 | `about` | Your profile over the page's text, and your social links | none |
 | `projects` | Projects grouped by status, with GitHub numbers when `github_user` is set | `projects` |
+| `project` | One project's own page, which a projects entry can lead to with `link` | `status`, `summary`, `tech`, `repo`, `homepage`, `demo` |
 | `douban` | Books and films on two shelves | `books`, `movies` |
 | `moments` | Short entries grouped by day | `moments` |
 | `links` | Your site's card to copy, how to ask for a link, and the links | `groups`, `apply` |
