@@ -1,0 +1,50 @@
+# An example site that uses Almanac, for developing the theme and for its
+# screenshot. themes/almanac links to the root of this repository.
+site:
+  title: Almanac
+  description: 记录技术探索 · 项目 · 生活
+  baseURL: http://localhost:1717
+  language: zh-CN
+  author: Your Name
+  timezone: Asia/Shanghai
+
+content:
+  store: file
+  dir: content
+
+markdown:
+  unsafeHTML: true
+
+build:
+  output: public
+  pageSize: 10
+
+theme:
+  name: almanac
+  settings:
+    avatar: /images/avatar.svg
+    position: 后端工程师
+    location: 杭州
+    status: 在职
+    hero_title: 🎉 Hi，我是 Your Name
+    hero_text: 后端工程师 · 喜欢用代码记录生活和构建产品。这里是我的数字花园 —— 记录技术探索、开源项目、阅读、影视和旅行。
+    motto: 保持热爱，拒绝焦虑。
+    banner: /images/banner.webp
+    nav:
+      - {label: 文章, url: /posts/}
+      - {label: 项目, url: /projects/}
+      - {label: 豆瓣, url: /douban/}
+      - {label: 动态, url: /moments/}
+      - {label: 关于, url: /about/}
+      - {label: 友链, url: /links/}
+      - {label: 简历, url: /resume/}
+    social:
+      - {platform: github, url: "https://github.com/yourname"}
+      - {platform: x, url: "https://x.com/yourname"}
+      - {platform: bilibili, url: "https://space.bilibili.com/1"}
+      - {platform: wechat, qr: /images/wechat-qr.svg, account: yourname}
+      - {platform: mail, url: "mailto:you@example.com"}
+      - {platform: rss, url: /feed/}
+    feed_page: /feed/
+    resume_page: /resume/
+    card_fallback: tile
