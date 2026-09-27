@@ -87,9 +87,10 @@ Each layout's template starts with the full list of what it reads, and
 A post can ask for the card it is drawn with on the home page with
 `cardSize`: `feature`, `standard`, `right`, `compact` or `note`, and give a
 `cover`, a picture beside it in its folder or an address. The cover's
-`coverMedium` is `photo`, `logo` or `shot`. Kite's listings do not yet carry
-a post's front matter to the theme, so for now every card is drawn as if its
-post had none; see the [design notes](docs/design/README.md#5-对-kite-的依赖).
+`coverMedium` is `photo`, `logo` or `shot`. A post that names no cover is
+drawn with the first picture of its text, and one with `cover: false`, which
+is what the No cover button in Kite's editor writes, with none. Both need
+Kite 0.1.2 or later, whose listings carry a post's front matter.
 
 Pictures in a grid, a grid of logos and players from Bilibili, YouTube or
 NetEase Cloud Music are written as HTML in a post, which needs

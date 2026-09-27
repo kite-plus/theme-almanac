@@ -1,5 +1,7 @@
 {{- /* A card's cover, sorted by what the picture is rather than by how it
-       fits, since a brand's logo and a photo cannot share one frame:
+       fits, since a brand's logo and a photo cannot share one frame. The
+       picture is the post's cover, or the first picture of its text when
+       its front matter names none, and none for cover: false:
 
          logo   a mark on a tile of its own color, sized to the tile
          photo  a picture that fills the frame
@@ -14,12 +16,17 @@
 {{- $lang := .site.Language -}}
 {{- $loading := .loading | default "lazy" -}}
 
+{{- $picture := "" -}}
+{{- $cover := $p.Params.cover -}}
+{{- if eq (printf "%v" $cover) "false" }}
+{{- else if $cover }}{{ $picture = printf "%v" $cover }}
+{{- else }}{{ with $p.Images }}{{ $picture = index . 0 }}{{ end }}{{ end -}}
+
 {{- $src := "" -}}
-{{- with $p.Params.cover -}}
-  {{- $c := printf "%v" . -}}
-  {{- if or (str.HasPrefix "http://" $c) (str.HasPrefix "https://" $c) (str.HasPrefix "//" $c) }}{{ $src = $c }}
-  {{- else if str.HasPrefix "/" $c }}{{ $src = url.Rel $c }}
-  {{- else }}{{ $src = printf "%s%s" $p.RelPermalink (str.TrimPrefix "./" $c) }}{{ end -}}
+{{- with $picture -}}
+  {{- if or (str.HasPrefix "http://" .) (str.HasPrefix "https://" .) (str.HasPrefix "//" .) }}{{ $src = . }}
+  {{- else if str.HasPrefix "/" . }}{{ $src = url.Rel . }}
+  {{- else }}{{ $src = printf "%s%s" $p.RelPermalink (str.TrimPrefix "./" .) }}{{ end -}}
 {{- end -}}
 
 {{- $medium := "" -}}

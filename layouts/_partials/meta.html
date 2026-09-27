@@ -29,12 +29,19 @@
   {{- if .Site.NoIndex }}
   <meta name="robots" content="noindex, nofollow">
   {{- end }}
-  {{- /* A page's cover, beside it in its folder or elsewhere, stands in for
-         the site's share picture, and the avatar for that. */ -}}
+  {{- /* A page's picture stands in for the site's share picture, and the
+         avatar for that: its cover, beside it in its folder or elsewhere,
+         or the first picture of its text when it names none, and none for
+         cover: false. */ -}}
   {{- $image := "" }}
   {{- with $s.avatar }}{{ $image = url.Abs . }}{{ end }}
   {{- with $s.share_image }}{{ $image = url.Abs . }}{{ end }}
-  {{- with .Page.Params.cover }}
+  {{- $picture := "" }}
+  {{- $cover := .Page.Params.cover }}
+  {{- if eq (printf "%v" $cover) "false" }}
+  {{- else if $cover }}{{ $picture = printf "%v" $cover }}
+  {{- else }}{{ with .Page.Images }}{{ $picture = index . 0 }}{{ end }}{{ end }}
+  {{- with $picture }}
     {{- if or (str.HasPrefix "http://" .) (str.HasPrefix "https://" .) }}{{ $image = . }}
     {{- else if str.HasPrefix "/" . }}{{ $image = url.Abs . }}
     {{- else }}{{ $image = printf "%s%s" $.Page.Permalink (str.TrimPrefix "./" .) }}{{ end }}

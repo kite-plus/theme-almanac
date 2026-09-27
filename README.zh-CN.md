@@ -61,7 +61,7 @@ projects:
 
 ### 写作
 
-文章可以用 `cardSize` 指定它在首页的卡片样式：`feature`、`standard`、`right`、`compact` 或 `note`，用 `cover` 给一张封面（和文章放在同一个目录里的图片，或者一个地址），`coverMedium` 可以是 `photo`、`logo` 或 `shot`。Kite 的列表目前还不把文章的 front matter 交给主题，所以现在所有卡片都按没有这些字段来画，见[设计文档](docs/design/README.md#5-对-kite-的依赖)。
+文章可以用 `cardSize` 指定它在首页的卡片样式：`feature`、`standard`、`right`、`compact` 或 `note`，用 `cover` 给一张封面（和文章放在同一个目录里的图片，或者一个地址），`coverMedium` 可以是 `photo`、`logo` 或 `shot`。没写封面的文章，卡片用正文里的第一张图；写了 `cover: false`（也就是 Kite 编辑器里的「不用封面」）就不用图。这些都需要 Kite 0.1.2 或更高的版本，它的列表才会把文章的 front matter 交给主题。
 
 图片网格、Logo 网格，以及哔哩哔哩、YouTube、网易云音乐的播放器，都在文章里用 HTML 写，需要在 `kite.yaml` 里设 `markdown.unsafeHTML: true`。HTML 里面的 Markdown 前后各空一行：
 

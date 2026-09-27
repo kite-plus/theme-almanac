@@ -53,7 +53,7 @@
 - **搜索和评论交给官方插件**：站点装了 [plugin-search](https://github.com/kite-plus/plugin-search) 时，页头出现搜索框，点开是插件的全文搜索，插件自己的浮动按钮不再出现；[plugin-comments](https://github.com/kite-plus/plugin-comments) 把评论放进主题留的 `data-kite-comments`，Waline 的配色绑到主题的颜色上。
 - **不请求第三方**：字体默认用读者设备上的，打开 `web_fonts` 才加载 Google Fonts，而且不阻塞渲染。项目的 GitHub 数据由读者的浏览器去取（构建不能联网），只在设置了 `github_user` 时才取，缓存一小时。
 - **主题自己说的字**都在 `_partials/t.html`：站点语言以 `zh` 开头用中文，其余用英文。后台里主题的中文在 `i18n/zh-CN.yaml`。
-- **没有封面的卡片**：画成纯文字的 compact 卡；设置「用第一个标签画一块封面」时，画成按标签取色的渐变色块。
+- **没有封面的卡片**：没写 `cover` 时用正文里的第一张图（`.Images`）。写了 `cover: false`，或者正文里也没有图，就画成纯文字的 compact 卡；设置「用第一个标签画一块封面」时，画成按标签取色的渐变色块。分享图也按同样的顺序取，最后退回站点分享图和头像。
 
 ## 5. 对 Kite 的依赖
 
@@ -61,7 +61,7 @@
 
 | # | Kite 要做的 | 现状 | 对主题的影响 |
 |---|---|---|---|
-| K1 | **列表里的页面带上 front matter**（待确认，见 §6） | 列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | 首页和标签页的卡片没有封面、没有阅读时间，`cardSize` 不起作用。主题已经按有 `Params` 写好（封面、feature / standard / right / compact / note 五种卡片），Kite 一给就生效 |
+| K1 | **列表里的页面带上 front matter**（已在 Kite 修复，待发版，见 §6） | 0.1.1 的列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | 首页和标签页的卡片没有封面、没有阅读时间，`cardSize` 不起作用。修复后这些都生效；同一版还加了正文图片 `.Images`，没写封面的文章用它的第一张。主题要求 Kite 0.1.2 |
 | K2 | **站点声明的内容类型** | 只有 post 和 page | 项目、书影、动态写在一个页面的 front matter 里。项目的详情页用 `project` 布局另建一个页面，地址是 `/名字/` 这样的一层，同样的状态、技术栈和链接要在两处各写一遍。和风标的 T1 是同一件事 |
 | K3 | **发布 bundle 子目录里的文件**（待确认，见 §6） | 只发布 bundle 顶层的文件，子目录被跳过 | 放在 `images/` 这类子目录里的图片和视频不会发布，正文里是坏图 |
 | K4 | **中文标题的锚点**（待确认，见 §6） | 自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 目录能用，但锚点看不出是哪一节，调整标题顺序后会变 |
@@ -75,15 +75,16 @@
 
 ## 6. 待确认的 Kite 问题
 
-K1、K3、K4 影响最大。三个问题都只记录在这里，**还没有在 Kite 里改**：先确认问题和改法，再决定怎么处理。代码位置对应 Kite 0.1.1（7396dac）。
+K1、K3、K4 影响最大。K1 已经在 Kite 里修复，等下一个版本发布；K3、K4 还只记录在这里，**没有在 Kite 里改**：先确认问题和改法，再决定怎么处理。代码位置对应 Kite 0.1.1（7396dac）。
 
-### K1 列表里的页面没有 front matter `[待定]`
+### K1 列表里的页面没有 front matter `[已修复，待发版]`
 
 - **现象**：首页、文章列表、标签页里的卡片，以及文章底部的上一篇、下一篇，拿到的页面 `.Params` 是空的，`.WordCount` 是 0。卡片上没有封面，`cardSize` 不起作用；要是直接显示阅读时间，每篇都会是 1 分钟（主题在字数为 0 时不显示）。
 - **复现**：在示例站里给一篇文章写上 `cover` 和 `cardSize: feature`，首页仍然把它画成没有封面的卡片；同一个值在这篇文章自己的页面上用 `.Page.Params.cover` 取得到。
 - **位置**：`internal/build/build.go` 第 591 行的 `listedPage` 只读 `title`、`slug`、`excerpt`、`published_at`、`taxonomies`（第 595 行），第 742 行的 `summaryToContent` 不带 `Meta`；`content.Summary`（`internal/content/content.go` 第 93 行）本身就没有这些字段，只多一个 `Pinned`。
 - **影响**：带封面的文章在卡片上看不到封面，只能画成纯文字卡片，或者主题画的标签色块。
 - **可能的改法**：列表投影加上 `params` 和字数，存在索引里；构建记录依赖时把读到的这两个字段记上，列表仍然只读投影，不用加载正文。
+- **修复**：[kite-plus/kite#1](https://github.com/kite-plus/kite/issues/1) 按上面的改法做了：列表查询带上每篇的 front matter，索引在记摘要时一并记下字数和正文图片，列表里的页面和上一篇、下一篇都有 `.Params`、`.WordCount` 和 `.Images`。
 
 ### K3 bundle 子目录里的文件不发布 `[待定]`
 
