@@ -6,7 +6,7 @@
 
 ![Almanac 的首页，来自示例站点](screenshot.webp)
 
-Almanac 是「年鉴 / 历书」——一本按年份记下日子和小事的书。这个主题也想做同样的事：给你读过、看过、做过、写过的东西留个痕迹。它最早是一套 [Hugo 主题](https://github.com/amigoer/almanac)，[amigoer.com](https://www.amigoer.com) 就是用它搭的；这里按 Kite 的主题契约整套重写，样子不变。
+Almanac 是「年鉴 / 历书」——一本按年份记下日子和小事的书。这个主题也想做同样的事：给你读过、看过、做过、写过的东西留个痕迹。
 
 ## 画出来的样子
 
@@ -62,7 +62,7 @@ projects:
 
 文章可以用 `cardSize` 指定它在首页的卡片样式：`feature`、`standard`、`right`、`compact` 或 `note`，用 `cover` 给一张封面（和文章放在同一个目录里的图片，或者一个地址），`coverMedium` 可以是 `photo`、`logo` 或 `shot`。Kite 的列表目前还不把文章的 front matter 交给主题，所以现在所有卡片都按没有这些字段来画，见[设计文档](docs/design/README.md#5-对-kite-的依赖)。
 
-Kite 没有 shortcode。在 `kite.yaml` 里设 `markdown.unsafeHTML: true` 后，Hugo 版的 shortcode 可以写成 HTML，里面的 Markdown 前后各空一行：
+图片网格、Logo 网格，以及哔哩哔哩、YouTube、网易云音乐的播放器，都在文章里用 HTML 写，需要在 `kite.yaml` 里设 `markdown.unsafeHTML: true`。HTML 里面的 Markdown 前后各空一行：
 
 ```html
 <div class="gallery" data-cols="3">
@@ -76,6 +76,12 @@ Kite 没有 shortcode。在 `kite.yaml` 里设 `markdown.unsafeHTML: true` 后�
 <div class="embed"><iframe src="https://player.bilibili.com/player.html?bvid=BV1uv411q7Mv&autoplay=0" allowfullscreen></iframe></div>
 
 <div class="embed music"><iframe src="https://music.163.com/outchain/player?type=2&id=1974443814&auto=0&height=66"></iframe></div>
+
+<div class="pic-grid" data-cols="3">
+  <div class="cell"><img src="kite.svg" alt="Kite"><span class="name">Kite</span></div>
+  <div class="cell"><img src="go.svg" alt="Go"><span class="name">Go</span></div>
+  <div class="cell"><img src="tailwind.svg" alt="Tailwind CSS"><span class="name">Tailwind CSS</span></div>
+</div>
 ```
 
 ### 插件
@@ -111,7 +117,7 @@ kite theme verify .
 
 ## 设计
 
-和 Hugo 版相比改了什么、Kite 还要补哪些能力、怎样把 amigoer.com 迁过来，都写在 [docs/design/README.md](docs/design/README.md)。
+主题的页面、设置、外观，以及 Kite 还要补哪些能力，都写在 [docs/design/README.md](docs/design/README.md)。
 
 ## 许可
 

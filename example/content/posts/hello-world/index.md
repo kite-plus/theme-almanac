@@ -47,7 +47,7 @@ func main() {
 
 ### 图片
 
-Kite 没有 shortcode，原来的 `gallery` 写成一段 HTML，Markdown 图片前后各空一行：
+几张图片可以排成网格：用一段 HTML 把它们包起来，Markdown 图片前后各空一行：
 
 <div class="gallery" data-cols="2">
 

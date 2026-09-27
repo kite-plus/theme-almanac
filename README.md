@@ -11,9 +11,7 @@ English · [简体中文](README.zh-CN.md)
 
 An almanac is a yearly book, a record of dates and small markers of the year
 past. This theme is the same: a place to leave traces of what you read, watch,
-build and write. It began as a [Hugo theme](https://github.com/amigoer/almanac),
-which draws [amigoer.com](https://www.amigoer.com), and is rewritten here
-against Kite's theme contract with the same look.
+build and write.
 
 ## What it draws
 
@@ -92,8 +90,9 @@ A post can ask for the card it is drawn with on the home page with
 a post's front matter to the theme, so for now every card is drawn as if its
 post had none; see the [design notes](docs/design/README.md#5-对-kite-的依赖).
 
-Kite has no shortcodes. With `markdown.unsafeHTML: true` in `kite.yaml`, the
-Hugo theme's shortcodes are written as HTML, with a blank line around the
+Pictures in a grid, a grid of logos and players from Bilibili, YouTube or
+NetEase Cloud Music are written as HTML in a post, which needs
+`markdown.unsafeHTML: true` in `kite.yaml`. Leave a blank line around any
 Markdown inside:
 
 ```html
@@ -108,6 +107,12 @@ Markdown inside:
 <div class="embed"><iframe src="https://player.bilibili.com/player.html?bvid=BV1uv411q7Mv&autoplay=0" allowfullscreen></iframe></div>
 
 <div class="embed music"><iframe src="https://music.163.com/outchain/player?type=2&id=1974443814&auto=0&height=66"></iframe></div>
+
+<div class="pic-grid" data-cols="3">
+  <div class="cell"><img src="kite.svg" alt="Kite"><span class="name">Kite</span></div>
+  <div class="cell"><img src="go.svg" alt="Go"><span class="name">Go</span></div>
+  <div class="cell"><img src="tailwind.svg" alt="Tailwind CSS"><span class="name">Tailwind CSS</span></div>
+</div>
 ```
 
 ### Plugins
@@ -153,8 +158,8 @@ installs as it is. Tag the release and attach the zip.
 
 ## Design
 
-What changed from the Hugo theme, what Kite has to add for the rest of it, and
-the steps to move amigoer.com are in [docs/design/README.md](docs/design/README.md).
+The theme's pages, settings and look, and what Kite has to add for the rest of
+it, are in [docs/design/README.md](docs/design/README.md).
 
 ## License
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400">
   <rect width="1280" height="400" fill="#faf8f5"/>
-  <text x="1200" y="80" text-anchor="end" font-family="ui-monospace, 'SF Mono', monospace" font-size="14" fill="#c0764e" letter-spacing="0.2em">A HUGO THEME · 2026</text>
+  <text x="1200" y="80" text-anchor="end" font-family="ui-monospace, 'SF Mono', monospace" font-size="14" fill="#c0764e" letter-spacing="0.2em">A KITE THEME · 2026</text>
   <g transform="translate(80 130)">
     <g transform="scale(4)" fill="#1c1917">
       <rect x="3" y="4" width="11" height="24" rx="1.5"/>
