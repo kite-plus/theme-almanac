@@ -870,7 +870,7 @@
     max-width: 100%;
   }
 
-  /* Raw HTML an author can write in place of the Hugo shortcodes:
+  /* Pictures in a grid and embedded players, written as HTML in a post:
      <div class="gallery" data-cols="3"> holds pictures in a grid, and
      <div class="embed"> keeps a player at 16:9. */
   .prose-almanac .gallery {
@@ -1191,12 +1191,18 @@ html:has(.nav-toggle:checked) {
   pointer-events: none;
 }
 
-/* ===== pic-grid: a grid of logos, as the Hugo site's shortcode drew it ===== */
+/* ===== A grid of logos, each with its name under it =====
+   <div class="pic-grid" data-cols="3"> holds <div class="cell">s, each an
+   image and a <span class="name">; the class card draws each on a card. */
 .pic-grid {
   display: grid !important;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  max-width: 520px;
   gap: 28px 20px;
   margin: 24px auto;
 }
+.pic-grid[data-cols="3"] { --cols: 3; }
+.pic-grid[data-cols="4"] { --cols: 4; }
 .pic-grid .cell {
   display: flex;
   flex-direction: column;
