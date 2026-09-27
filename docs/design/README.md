@@ -1,6 +1,6 @@
 # 年鉴（Almanac）主题规划
 
-> 状态：0.1.0，未发布 · 最近更新：2026-09-27
+> 状态：0.1.0，未发布；§9 的三个 Kite 问题待确认 · 最近更新：2026-09-27
 > 文档约定沿用 [Kite 设计文档](https://github.com/kite-plus/kite/blob/main/docs/design/README.md#文档约定)：正文中文，专有名词保留英文；`[待定]` 表示明确推迟决策。
 > 主题名 `almanac`，中文名年鉴；仓库 `theme-almanac`，由 Hugo 主题 [amigoer/almanac](https://github.com/amigoer/almanac) 移植而来。
 
@@ -64,10 +64,10 @@ Hugo 版的 `params.author` 由站点作者 `site.author` 代替，`params.descr
 
 | # | Kite 要做的 | 现状 | 对主题和迁移的影响 |
 |---|---|---|---|
-| K1 | **列表里的页面带上 front matter** | 列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | **首页卡片没有封面、没有阅读时间，`cardSize` 不起作用**。主题已经按有 `Params` 写好（封面、feature / standard / right / compact / note 五种卡片），Kite 一给就生效。建议列表投影加上 `params`，或至少 `cover`、`cardSize`、字数 |
+| K1 | **列表里的页面带上 front matter**（待确认，见 §9） | 列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | **首页卡片没有封面、没有阅读时间，`cardSize` 不起作用**。主题已经按有 `Params` 写好（封面、feature / standard / right / compact / note 五种卡片），Kite 一给就生效。建议列表投影加上 `params`，或至少 `cover`、`cardSize`、字数 |
 | K2 | **站点声明的内容类型** | 只有 post 和 page | 项目、书影、动态只能写在一个页面的 front matter 里，没有各自的详情页和地址。和风标的 T1 是同一件事 |
-| K3 | **发布 bundle 子目录里的文件** | 只发布 bundle 顶层的文件，`images/` 之类的子目录被跳过 | amigoer.com 有 5 篇文章的图片放在 `images/` 里（成都游记就有 29 张图和 2 段视频），迁移时要么摊平，要么等 Kite 发布子目录 |
-| K4 | **中文标题的锚点** | 自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 目录能用，但锚点难看，改标题顺序会变；Hugo 版的 `#段落` 这类旧链接会失效 |
+| K3 | **发布 bundle 子目录里的文件**（待确认，见 §9） | 只发布 bundle 顶层的文件，`images/` 之类的子目录被跳过 | amigoer.com 有 5 篇文章的图片放在 `images/` 里（成都游记就有 29 张图和 2 段视频），迁移时要么摊平，要么等 Kite 发布子目录 |
+| K4 | **中文标题的锚点**（待确认，见 §9） | 自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 目录能用，但锚点难看，改标题顺序会变；Hugo 版的 `#段落` 这类旧链接会失效 |
 | K5 | **`aliases` 发布跳转页** | 读取并保存，但构建不写跳转页 | amigoer.com 的 `/travel/chengdu-trip/`、`/posts/ai-accounts-journey/` 两个旧地址需要在托管平台上配跳转 |
 | K6 | **把 Hugo 的 `summary` 当作描述** | 只认 `description` | 迁移时把 `summary` 改名为 `description` |
 | K7 | **图片处理** | 无（设计文档里是 M5） | 没有 WebP 多档和 `srcset`；原图直出，大图要在迁移前压缩 |
@@ -121,3 +121,30 @@ theme-almanac/
 1. **仓库放在哪**：`kite-plus/theme-almanac`（官方主题）还是 `amigoer/theme-almanac`（个人主题）`[待定]`。`theme.yaml` 的 `homepage` 和页脚的链接暂按前者写。
 2. **项目详情页**：K2 之前，项目的长文是改写成文章，还是先放弃 `[待定]`。
 3. **字体**：要不要把三种字体的子集放进主题，做到既不请求第三方、又和 Hugo 版一模一样 `[待定]`；中文字体太大，可能只放 Latin 子集。
+
+## 9. 待确认的 Kite 问题
+
+K1、K3、K4 决定 amigoer.com 能不能原样迁过来。三个问题都只记录在这里，**还没有在 Kite 里改**：先确认问题和改法，再决定是改 Kite，还是在迁移时绕开。代码位置对应 Kite 0.1.1（7396dac）。
+
+### K1 列表里的页面没有 front matter `[待定]`
+
+- **现象**：首页、文章列表、标签页里的卡片，以及文章底部的上一篇、下一篇，拿到的页面 `.Params` 是空的，`.WordCount` 是 0。卡片上没有封面，`cardSize` 不起作用；要是直接显示阅读时间，每篇都会是 1 分钟（主题在字数为 0 时不显示）。
+- **复现**：在示例站里给一篇文章写上 `cover` 和 `cardSize: feature`，首页仍然把它画成没有封面的卡片；同一个值在这篇文章自己的页面上用 `.Page.Params.cover` 取得到。
+- **位置**：`internal/build/build.go` 第 591 行的 `listedPage` 只读 `title`、`slug`、`excerpt`、`published_at`、`taxonomies`（第 595 行），第 742 行的 `summaryToContent` 不带 `Meta`；`content.Summary`（`internal/content/content.go` 第 93 行）本身就没有这些字段，只多一个 `Pinned`。
+- **影响**：amigoer.com 首页带封面的卡片（logo 图块、照片）全部变成纯文字卡片，或者主题画的标签色块。
+- **可能的改法**：列表投影加上 `params` 和字数，存在索引里；构建记录依赖时把读到的这两个字段记上，列表仍然只读投影，不用加载正文。
+
+### K3 bundle 子目录里的文件不发布 `[待定]`
+
+- **现象**：`content/posts/x/images/a.jpg` 这样放在子目录里的文件不会发布，正文里的 `![](images/a.jpg)` 在构建出的站点和预览里都是坏图。
+- **位置**：`internal/build/build.go` 第 347 行的 `MediaFiles` 只读 bundle 顶层，第 370 行遇到目录直接跳过。
+- **影响**：amigoer.com 有 5 篇文章的图片放在 `images/` 里：chengdu-trip（31 个文件，其中 2 段视频）、open-source-job-invite（8）、claude-code-hands-on（5）、super-individual（5）、hello-world（1）。
+- **可能的改法**：Kite 递归发布子目录，子目录本身是另一个条目的 bundle 时不重复发布，扩展名 URL 风格下的冲突检查照旧；或者迁移时把图片挪到 bundle 顶层，正文里的路径一起改。
+
+### K4 中文标题的锚点 `[待定]`
+
+- **现象**：中文标题的 id 是 `heading`、`heading-1`、`heading-2`……目录能跳转，但地址里看不出是哪一节，调整标题顺序后同一节的锚点也会变。
+- **复现**：示例站 `/posts/hello-world/` 的七个标题（「你好，世界」「段落」……「图片」），id 依次是 `heading` 到 `heading-6`。
+- **位置**：`internal/render/markdown/markdown.go` 第 142 行用的是 goldmark 默认的 `parser.WithAutoHeadingID()`，它只保留 ASCII 字母和数字。
+- **影响**：Hugo 版保留中文（如 `#你好世界`），读者收藏或别处引用的锚点迁移后会失效。
+- **可能的改法**：换一个保留 Unicode 字母和数字的 id 生成器，规则尽量和 Hugo 的 github 风格一致。这会改变所有现有站点的锚点，发版时要写明。
