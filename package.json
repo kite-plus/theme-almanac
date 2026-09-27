@@ -1,0 +1,14 @@
+{
+  "name": "theme-almanac",
+  "private": true,
+  "description": "Builds the stylesheet of the Almanac theme for Kite.",
+  "license": "MIT",
+  "scripts": {
+    "build": "tailwindcss -i src/almanac.css -o static/almanac/almanac.css --minify",
+    "watch": "tailwindcss -i src/almanac.css -o static/almanac/almanac.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

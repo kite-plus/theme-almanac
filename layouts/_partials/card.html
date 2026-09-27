@@ -1,0 +1,21 @@
+{{- /* One post in a feed, drawn as the card its front matter asks for with
+       cardSize: feature, standard, right, compact or note. A post that asks
+       for none is standard with a cover and compact without, or standard
+       with a tile of its first tag when the site says so.
+
+       A listing sees front matter only where Kite hands it over; where it
+       does not, every post is drawn as if it had none.
+       dict: page, site */ -}}
+{{- $p := .page -}}
+{{- $size := "" -}}
+{{- with $p.Params.cardSize }}{{ $size = printf "%v" . }}{{ end -}}
+{{- if not $size -}}
+  {{- if $p.Params.cover }}{{ $size = "standard" }}
+  {{- else if eq .site.ThemeSettings.card_fallback "tile" }}{{ $size = "standard" }}
+  {{- else }}{{ $size = "compact" }}{{ end -}}
+{{- end -}}
+{{- if eq $size "feature" }}{{ partial "card-feature.html" . }}
+{{- else if eq $size "right" }}{{ partial "card-right.html" . }}
+{{- else if eq $size "compact" }}{{ partial "card-compact.html" . }}
+{{- else if eq $size "note" }}{{ partial "card-note.html" . }}
+{{- else }}{{ partial "card-post.html" . }}{{ end -}}
