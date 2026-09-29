@@ -1,6 +1,6 @@
 # 年鉴（Almanac）主题规划
 
-> 状态：0.1.0，未发布；§6 的三个 Kite 问题待确认 · 最近更新：2026-09-27
+> 状态：0.1.0，已发布，要求 Kite 0.1.2；§6 的三个 Kite 问题都已在 Kite 0.1.2 修复 · 最近更新：2026-09-29
 > 文档约定沿用 [Kite 设计文档](https://github.com/kite-plus/kite/blob/main/docs/design/README.md#文档约定)：正文中文，专有名词保留英文；`[待定]` 表示明确推迟决策。
 > 主题名 `almanac`，中文名年鉴；仓库 [`kite-plus/theme-almanac`](https://github.com/kite-plus/theme-almanac)。
 
@@ -57,49 +57,51 @@
 
 ## 5. 对 Kite 的依赖
 
-对照 Kite 0.1.1（7396dac）整理。
+对照 Kite 0.1.1（7396dac）整理，状态已更新到 Kite 0.1.2（cd8b496）：K1、K3、K4、K5、K8、K9 在 0.1.2 里修复了。主题里绕开 K8、K9 的写法还没有改，在 0.1.2 上照样能用。
 
 | # | Kite 要做的 | 现状 | 对主题的影响 |
 |---|---|---|---|
-| K1 | **列表里的页面带上 front matter**（已在 Kite 修复，待发版，见 §6） | 0.1.1 的列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | 首页和标签页的卡片没有封面、没有阅读时间，`cardSize` 不起作用。修复后这些都生效；同一版还加了正文图片 `.Images`，没写封面的文章用它的第一张。主题要求 Kite 0.1.2 |
+| K1 | **列表里的页面带上 front matter**（见 §6） | Kite 0.1.2 已修复（[kite#1](https://github.com/kite-plus/kite/issues/1)）；0.1.1 的列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | 首页和标签页的卡片靠它画封面和阅读时间，`cardSize` 才起作用；同一版还加了正文图片 `.Images`，没写封面的文章用它的第一张。主题因此要求 Kite 0.1.2 |
 | K2 | **站点声明的内容类型** | 只有 post 和 page | 项目、书影、动态写在一个页面的 front matter 里。项目的详情页用 `project` 布局另建一个页面，地址是 `/名字/` 这样的一层，同样的状态、技术栈和链接要在两处各写一遍。和风标的 T1 是同一件事 |
-| K3 | **发布 bundle 子目录里的文件**（待确认，见 §6） | 只发布 bundle 顶层的文件，子目录被跳过 | 放在 `images/` 这类子目录里的图片和视频不会发布，正文里是坏图 |
-| K4 | **中文标题的锚点**（待确认，见 §6） | 自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 目录能用，但锚点看不出是哪一节，调整标题顺序后会变 |
-| K5 | **`aliases` 发布跳转页** | 读取并保存，但构建不写跳转页 | 改过地址的文章，旧地址打不开 |
+| K3 | **发布 bundle 子目录里的文件**（见 §6） | Kite 0.1.2 已修复（[kite#2](https://github.com/kite-plus/kite/issues/2)）；0.1.1 只发布 bundle 顶层的文件 | 放在 `images/` 这类子目录里的图片和视频照常发布 |
+| K4 | **中文标题的锚点**（见 §6） | Kite 0.1.2 已修复（[kite#3](https://github.com/kite-plus/kite/issues/3)）；0.1.1 的自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 锚点就是标题的文字；目录脚本先 `decodeURIComponent` 再找标题，不用改 |
+| K5 | **`aliases` 发布跳转页** | Kite 0.1.2 已修复（[kite#4](https://github.com/kite-plus/kite/issues/4)）：每个别名发布一个跳转页 | 改过地址的文章，旧地址跳到新地址 |
 | K6 | **图片处理** | 无（Kite 设计文档里是 M5） | 没有 WebP 多档和 `srcset`，图片按上传的原样输出 |
 | K7 | **模板里的 `T`** | 无 | 用 `t.html` 代替，同风标 T5 |
-| K8 | **整数运算、类型转换** | `math.*` 只收浮点数，`coll.*` 只收 `[]any`，没有 `int` 转 `float` | 计数从 `0.0` 开始加；标签云的字号交给 CSS `calc()`；首页条数按字符串比较。同风标 §11 第 6、7 项 |
-| K9 | **front matter 列表里的日期** | 是字符串，不是时间 | 动态按长度识别几种写法再解析，其他写法不显示星期 |
+| K8 | **整数运算、类型转换** | Kite 0.1.2 已修复（[kite#12](https://github.com/kite-plus/kite/issues/12)）：参数都是整数时结果是整数，`coll.*` 接受任意列表，有 `math.Int`、`math.Float`；0.1.1 的 `math.*` 只收浮点数 | 主题仍从 `0.0` 开始计数、按字符串比较首页条数，标签云的字号交给 CSS `calc()`；这些写法可以换掉。同风标 §11 第 6、7 项 |
+| K9 | **front matter 列表里的日期** | Kite 0.1.2 已修复（[kite#6](https://github.com/kite-plus/kite/issues/6)）：到模板里是时间，另有 `time.AsTime`；0.1.1 里是字符串 | 动态仍按长度识别几种写法再解析，可以换成直接格式化时间 |
 | K10 | **首页不分页，或由主题决定** | 首页随文章分页 | 第 2 页起画成普通列表。同风标 §11 第 8 项 |
 | K11 | **Markdown 扩展** | 没有 shortcode（Kite 设计文档 §14 待定） | 图片网格、Logo 网格和播放器要在文章里写 HTML，站点要开 `markdown.unsafeHTML` |
 
 ## 6. 待确认的 Kite 问题
 
-K1、K3、K4 影响最大。K1 已经在 Kite 里修复，等下一个版本发布；K3、K4 还只记录在这里，**没有在 Kite 里改**：先确认问题和改法，再决定怎么处理。代码位置对应 Kite 0.1.1（7396dac）。
+K1、K3、K4 影响最大，三个都已在 Kite 0.1.2 修复（2026-09-29 发布）。下面保留发现时的记录，代码位置对应 Kite 0.1.1（7396dac）。
 
-### K1 列表里的页面没有 front matter `[已修复，待发版]`
+### K1 列表里的页面没有 front matter `[已修复]`
 
 - **现象**：首页、文章列表、标签页里的卡片，以及文章底部的上一篇、下一篇，拿到的页面 `.Params` 是空的，`.WordCount` 是 0。卡片上没有封面，`cardSize` 不起作用；要是直接显示阅读时间，每篇都会是 1 分钟（主题在字数为 0 时不显示）。
 - **复现**：在示例站里给一篇文章写上 `cover` 和 `cardSize: feature`，首页仍然把它画成没有封面的卡片；同一个值在这篇文章自己的页面上用 `.Page.Params.cover` 取得到。
 - **位置**：`internal/build/build.go` 第 591 行的 `listedPage` 只读 `title`、`slug`、`excerpt`、`published_at`、`taxonomies`（第 595 行），第 742 行的 `summaryToContent` 不带 `Meta`；`content.Summary`（`internal/content/content.go` 第 93 行）本身就没有这些字段，只多一个 `Pinned`。
 - **影响**：带封面的文章在卡片上看不到封面，只能画成纯文字卡片，或者主题画的标签色块。
 - **可能的改法**：列表投影加上 `params` 和字数，存在索引里；构建记录依赖时把读到的这两个字段记上，列表仍然只读投影，不用加载正文。
-- **修复**：[kite-plus/kite#1](https://github.com/kite-plus/kite/issues/1) 按上面的改法做了：列表查询带上每篇的 front matter，索引在记摘要时一并记下字数和正文图片，列表里的页面和上一篇、下一篇都有 `.Params`、`.WordCount` 和 `.Images`。
+- **修复**：[kite-plus/kite#1](https://github.com/kite-plus/kite/issues/1) 按上面的改法做了：列表查询带上每篇的 front matter，索引在记摘要时一并记下字数和正文图片，列表里的页面和上一篇、下一篇都有 `.Params`、`.WordCount` 和 `.Images`。Kite 0.1.2 起生效。
 
-### K3 bundle 子目录里的文件不发布 `[待定]`
+### K3 bundle 子目录里的文件不发布 `[已修复]`
 
 - **现象**：`content/posts/x/images/a.jpg` 这样放在子目录里的文件不会发布，正文里的 `![](images/a.jpg)` 在构建出的站点和预览里都是坏图。
 - **位置**：`internal/build/build.go` 第 347 行的 `MediaFiles` 只读 bundle 顶层，第 370 行遇到目录直接跳过。
 - **影响**：图片多的文章不能把图片收进子目录，只能全部放在 bundle 顶层。
 - **可能的改法**：Kite 递归发布子目录，子目录本身是另一个条目的 bundle 时不重复发布，扩展名 URL 风格下的冲突检查照旧。
+- **修复**：[kite-plus/kite#2](https://github.com/kite-plus/kite/issues/2) 按这个改法做了，Kite 0.1.2 起生效。
 
-### K4 中文标题的锚点 `[待定]`
+### K4 中文标题的锚点 `[已修复]`
 
 - **现象**：中文标题的 id 是 `heading`、`heading-1`、`heading-2`……目录能跳转，但地址里看不出是哪一节，调整标题顺序后同一节的锚点也会变。
 - **复现**：示例站 `/posts/hello-world/` 的七个标题（「你好，世界」「段落」……「图片」），id 依次是 `heading` 到 `heading-6`。
 - **位置**：`internal/render/markdown/markdown.go` 第 142 行用的是 goldmark 默认的 `parser.WithAutoHeadingID()`，它只保留 ASCII 字母和数字。
 - **影响**：读者收藏或别处引用的锚点不稳定，改一下标题顺序就会失效。
 - **可能的改法**：换一个保留 Unicode 字母和数字的 id 生成器，规则可以参照 GitHub 给标题生成锚点的方式（如 `#你好世界`）。这会改变所有现有站点的锚点，发版时要写明。
+- **修复**：[kite-plus/kite#3](https://github.com/kite-plus/kite/issues/3) 按 GitHub 的规则从标题文字生成 id，`url.Anchorize` 用同一规则，Kite 0.1.2 起生效。示例站那七个标题的 id 现在依次是 `你好世界`、`段落`、`代码`、`引用`、`表格`、`列表`、`图片`。
 
 ## 7. 仓库
 
