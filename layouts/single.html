@@ -14,24 +14,36 @@
     {{- end }}
     <h1 class="text-2xl font-bold leading-[1.25] tracking-tight md:text-3xl lg:text-[2.375rem]">{{ $p.Title }}</h1>
     <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
+      {{- $sep := false }}
+      {{- if not (time.IsZero $p.PublishDate) }}
       <span class="inline-flex items-center gap-1">
         {{- partial "icon.html" (dict "name" "calendar" "class" "size-3") }}
         <time datetime="{{ time.Format "2006-01-02T15:04:05Z07:00" $p.PublishDate }}" class="tabular-nums">{{ time.Format "2006-01-02" $p.PublishDate }}</time>
       </span>
+      {{- $sep = true }}
+      {{- end }}
       {{- if and $s.show_reading_time (gt $p.WordCount 0) }}
+      {{- if $sep }}
       <span class="opacity-40">·</span>
+      {{- end }}
+      {{- $sep = true }}
       <span class="inline-flex items-center gap-1">
         {{- partial "icon.html" (dict "name" "clock" "class" "size-3") }}
         {{ partial "t.html" (dict "k" "reading_time" "lang" $lang "n" (time.Minutes $p.ReadingTime)) }}
       </span>
       {{- end }}
       {{- if and $s.show_word_count (gt $p.WordCount 0) }}
+      {{- if $sep }}
       <span class="opacity-40">·</span>
+      {{- end }}
+      {{- $sep = true }}
       <span>{{ partial "t.html" (dict "k" "word_count" "lang" $lang "n" $p.WordCount) }}</span>
       {{- end }}
       {{- $updated := time.Format "2006-01-02" $p.Lastmod }}
       {{- if and $s.show_updated (not (time.IsZero $p.Lastmod)) (gt (time.Unix $p.Lastmod) (time.Unix $p.PublishDate)) (ne $updated (time.Format "2006-01-02" $p.PublishDate)) }}
+      {{- if $sep }}
       <span class="opacity-40">·</span>
+      {{- end }}
       <span>{{ partial "t.html" (dict "k" "updated_on" "lang" $lang "x" $updated) }}</span>
       {{- end }}
     </div>

@@ -6,11 +6,16 @@
 {{- $s := .site.ThemeSettings -}}
 {{- $lang := .site.Language -}}
 <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground {{ .class }}">
+  {{- $sep := false }}
+  {{- if not (time.IsZero $p.PublishDate) }}
   <time datetime="{{ time.Format "2006-01-02" $p.PublishDate }}" class="tabular-nums">{{ time.Format "2006-01-02" $p.PublishDate }}</time>
+  {{- $sep = true }}
+  {{- end }}
   {{- if and $s.show_reading_time (gt $p.WordCount 0) }}
-  <span class="opacity-40">·</span><span>{{ partial "t.html" (dict "k" "reading_time" "lang" $lang "n" (time.Minutes $p.ReadingTime)) }}</span>
+  {{ if $sep }}<span class="opacity-40">·</span>{{ end }}<span>{{ partial "t.html" (dict "k" "reading_time" "lang" $lang "n" (time.Minutes $p.ReadingTime)) }}</span>
+  {{- $sep = true }}
   {{- end }}
   {{- if .category }}{{ with $p.Terms "categories" }}
-  <span class="opacity-40">·</span><span class="uppercase tracking-wider">{{ (index . 0).Name }}</span>
+  {{ if $sep }}<span class="opacity-40">·</span>{{ end }}<span class="uppercase tracking-wider">{{ (index . 0).Name }}</span>
   {{- end }}{{ end }}
 </div>

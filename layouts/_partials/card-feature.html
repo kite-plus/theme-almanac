@@ -12,8 +12,10 @@
     <div class="space-y-2.5 p-5 pt-4">
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground">
         <span class="inline-flex items-center rounded-sm bg-brand/10 px-1.5 py-0.5 uppercase tracking-wider text-brand">{{ partial "t.html" (dict "k" "featured" "lang" $lang) }}</span>
+        {{- if not (time.IsZero $p.PublishDate) }}
         <span class="opacity-40">·</span>
         <time datetime="{{ time.Format "2006-01-02" $p.PublishDate }}" class="tabular-nums">{{ time.Format "2006-01-02" $p.PublishDate }}</time>
+        {{- end }}
         {{- if and $s.show_reading_time (gt $p.WordCount 0) }}
         <span class="opacity-40">·</span><span>{{ partial "t.html" (dict "k" "reading_time" "lang" $lang "n" (time.Minutes $p.ReadingTime)) }}</span>
         {{- end }}
