@@ -1,6 +1,6 @@
 name: almanac
 title: Almanac
-version: 0.1.0
+version: 0.1.1
 apiVersion: kite/v1
 requires: ">=0.1.2 <2.0.0"
 description: A minimal, content-rich personal hub. A magazine masthead over a feed of cards, shelves for projects, books and films, moments, friend links and a resume, on cream paper by day and warm ink by night, with nothing loaded from third parties unless you ask for it.
