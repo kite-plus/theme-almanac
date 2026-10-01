@@ -114,7 +114,7 @@ theme-almanac/
 ├── i18n/zh-CN.yaml     # 后台里主题的中文
 ├── screenshot.webp     # 1280×800，后台主题列表里用
 ├── example/            # 用这套主题的 Kite 站点，每种布局都有一个页面
-├── scripts/package.sh  # 打出后台能直接安装的 zip
+├── scripts/package.sh  # 用 kite theme pack 打出后台能直接安装的 zip
 ├── package.json        # 只用来编译 CSS
 ├── LICENSE             # MIT
 └── docs/design/        # 本文
@@ -122,7 +122,7 @@ theme-almanac/
 
 - **开发**：在 `example/` 里 `kite run`，主题通过 `example/themes/almanac` 这个指向仓库根目录的符号链接接进去。改了模板里的 class 或 `src/` 之后跑 `npm run build`。
 - **验收**：`kite theme verify .` 和 `(cd example && kite build --verify)` 都通过。
-- **发版**：`scripts/package.sh` 打出 `dist/almanac-<版本>.zip`，打 tag 并附上这个 zip。
+- **发版**：`scripts/package.sh` 调用 `kite theme pack`（要 Kite 0.1.5 及以上，`KITE` 可以指定别的 kite），打出 `dist/almanac-<版本>.zip`，打 tag 并附上这个 zip。
 
 ## 8. 待定问题
 

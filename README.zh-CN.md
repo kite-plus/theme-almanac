@@ -116,7 +116,7 @@ kite theme verify .
 
 ## 发版
 
-`scripts/package.sh` 打出 `dist/almanac-<版本>.zip`，里面只有一个名为 `almanac` 的目录，放着 `theme.yaml` 和主题的文件，后台可以直接安装。打 tag 并附上这个 zip。
+`scripts/package.sh` 调用 `kite theme pack`（要 Kite 0.1.5 及以上，`KITE` 可以指定别的 kite），打出 `dist/almanac-<版本>.zip`，里面只有一个名为 `almanac` 的目录，放着 `theme.yaml` 和主题的文件，后台可以直接安装。打 tag 并附上这个 zip。
 
 ## 设计
 
