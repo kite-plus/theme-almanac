@@ -2,7 +2,7 @@ name: almanac
 title: Almanac
 version: 0.1.1
 apiVersion: kite/v1
-requires: ">=0.1.2 <2.0.0"
+requires: ">=0.1.4 <2.0.0"
 description: A minimal, content-rich personal hub. A magazine masthead over a feed of cards, shelves for projects, books and films, moments, friend links and a resume, on cream paper by day and warm ink by night, with nothing loaded from third parties unless you ask for it.
 author:
   name: Amigoer
@@ -15,6 +15,11 @@ screenshot: screenshot.webp
 capabilities: [static, dynamic]
 contentTypes: [post, page]
 taxonomies: [tags, categories]
+
+menus:
+  - name: main
+    label: Header
+    description: The links in the header, and in the menu of a narrow screen, where a link's icon param picks its icon. Until the site gives this menu links, the header links under Navigation are shown.
 
 layouts:
   - name: about
@@ -148,7 +153,7 @@ settings:
       - key: nav
         type: repeat
         label: Header links
-        help: An address within the site starts with a slash. A link to another site opens in a new tab. The icon is only drawn in the menu of a narrow screen, and left on Automatic it is guessed from the address.
+        help: Shown while the site's header menu has no links. An address within the site starts with a slash. A link to another site opens in a new tab. The icon is only drawn in the menu of a narrow screen, and left on Automatic it is guessed from the address.
         fields:
           - {key: label, type: string, label: Label, placeholder: Posts}
           - {key: url, type: url, label: Address, placeholder: /posts/}

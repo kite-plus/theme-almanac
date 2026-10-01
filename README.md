@@ -40,11 +40,17 @@ write an embed yourself.
 
 Drop the zip of a release on the upload tile under **Settings → Theme** in
 Kite's studio, or unzip it into a site's `themes` folder and set `theme.name`
-to `almanac` in `kite.yaml`. Almanac asks for Kite 0.1 or later.
+to `almanac` in `kite.yaml`. Almanac asks for Kite 0.1.4 or later.
 
 Its settings are grouped in the studio as Profile, Look, Navigation, Social,
 Home page, Posts, Special pages and Footer.
 [The example site's kite.yaml](example/kite.yaml) sets most of them.
+
+The header draws the site's main menu, which Kite keeps in `kite.yaml` and
+the studio edits under **Settings → Menus**. A link's `icon` param picks its
+icon in the menu of a narrow screen, as `params: {icon: book-open}`, and
+otherwise one is guessed from its address. Until the site writes a main menu,
+the header shows the links set under Navigation.
 
 ### Special pages
 
