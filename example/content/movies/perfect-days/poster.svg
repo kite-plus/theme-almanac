@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" font-family="Inter, PingFang SC, sans-serif">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5c77e"/><stop offset=".55" stop-color="#e98b5b"/><stop offset="1" stop-color="#3a2d4a"/></linearGradient></defs>
+  <rect width="400" height="600" fill="url(#g)"/>
+  <circle cx="200" cy="250" r="70" fill="#fff4dc" opacity=".85"/>
+  <path d="M0 420 L120 360 L200 400 L300 340 L400 390 V600 H0Z" fill="#2a2138"/>
+  <text x="200" y="520" text-anchor="middle" font-size="34" font-weight="700" fill="#fbeedd" letter-spacing="2">PERFECT DAYS</text>
+  <text x="200" y="556" text-anchor="middle" font-size="16" fill="#fbeedd" opacity=".75">Wim Wenders</text>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" font-family="Source Serif 4, Songti SC, serif">
+  <rect width="400" height="600" fill="#efe6d6"/><path d="M40 260c60-40 120 40 180 0s100-40 140 0" fill="none" stroke="#b5543c" stroke-width="4"/><path d="M40 300c60-40 120 40 180 0s100-40 140 0" fill="none" stroke="#b5543c" stroke-width="2" opacity=".5"/>
+  <text x="36" y="470" font-size="40" font-weight="700" fill="#3b2f25">慢</text>
+  <text x="36" y="520" font-size="20" fill="#3b2f25" opacity=".75">米兰·昆德拉</text>
+</svg>

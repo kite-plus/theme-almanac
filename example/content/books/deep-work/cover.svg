@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" font-family="Source Serif 4, Songti SC, serif">
+  <rect width="400" height="600" fill="#1f3a4d"/><circle cx="200" cy="210" r="120" fill="none" stroke="#e0b25c" stroke-width="3"/><circle cx="200" cy="210" r="78" fill="none" stroke="#e0b25c" stroke-width="3" opacity=".7"/><circle cx="200" cy="210" r="36" fill="#e0b25c"/>
+  <text x="36" y="470" font-size="40" font-weight="700" fill="#f2ead8">深度工作</text>
+  <text x="36" y="520" font-size="20" fill="#f2ead8" opacity=".75">Cal Newport</text>
+</svg>

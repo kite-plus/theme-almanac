@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" font-family="Inter, PingFang SC, sans-serif">
+  <rect width="1280" height="800" fill="#f7f5f0"/>
+  <rect width="1280" height="44" fill="#ebe7de"/>
+  <circle cx="24" cy="22" r="7" fill="#e06c5b"/><circle cx="46" cy="22" r="7" fill="#e8b450"/><circle cx="68" cy="22" r="7" fill="#7cb069"/>
+  <rect y="44" width="260" height="756" fill="#efece4"/>
+  <text x="28" y="96" font-size="22" font-weight="700" fill="#2d2a24">tideline</text>
+  <g font-size="16" fill="#6b665c"><text x="28" y="150">今日潮汐</text><text x="28" y="190">RSS</text><text x="28" y="230">邮件订阅</text><text x="28" y="270">Lists</text><text x="28" y="310">稍后读</text></g>
+  <rect x="16" y="130" width="228" height="30" rx="6" fill="#3d6fa8" opacity=".12"/>
+  <text x="300" y="104" font-size="30" font-weight="700" fill="#2d2a24">涨潮 · 07:30</text>
+  <text x="300" y="138" font-size="16" fill="#8a8476">今天的 42 条输入，预计 26 分钟读完</text>
+  <g fill="#fffdf8" stroke="#e2ddd2">
+    <rect x="300" y="168" width="940" height="128" rx="12"/><rect x="300" y="312" width="940" height="128" rx="12"/><rect x="300" y="456" width="940" height="128" rx="12"/><rect x="300" y="600" width="940" height="128" rx="12"/>
+  </g>
+  <g fill="#2d2a24" font-size="19" font-weight="600"><text x="328" y="212">一个 Go 程序员读 SQLite 源码的第三周</text><text x="328" y="356">为什么我把订阅从 300 个砍到 40 个</text><text x="328" y="500">Weekly #212：本地优先的软件</text><text x="328" y="644">设计一个只在早上响起的通知</text></g>
+  <g fill="#8a8476" font-size="15"><text x="328" y="244">blog.example.com · 12 分钟</text><text x="328" y="388">newsletter · 6 分钟</text><text x="328" y="532">weekly.example.org · 9 分钟</text><text x="328" y="676">notes.example.net · 4 分钟</text></g>
+  <g fill="#3d6fa8" opacity=".75"><rect x="1120" y="200" width="88" height="26" rx="13"/><rect x="1120" y="344" width="88" height="26" rx="13"/></g>
+</svg>

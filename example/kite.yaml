@@ -11,6 +11,69 @@ site:
 content:
   store: file
   dir: content
+  # Projects, books and films each get a form in the studio, a page of
+  # their own and a listing, which Almanac draws when the kinds are named
+  # project, book and movie.
+  types:
+    - kind: project
+      label: 项目
+      dir: projects
+      order: weight
+      taxonomies: [tech]
+      fields:
+        - {key: cover, type: image, label: 截图, help: 项目页顶部的大图。}
+        - {key: description, type: text, label: 一句话介绍, help: 留空时从 GitHub 取仓库的简介。}
+        - {key: icon, type: image, label: Logo, help: 卡片上项目名旁边的小图标。}
+        - key: state
+          type: select
+          label: 状态
+          default: active
+          options:
+            - {value: active, label: 进行中}
+            - {value: maintained, label: 维护中}
+            - {value: experimental, label: 实验}
+            - {value: archived, label: 已归档}
+        - {key: repo, type: url, label: 仓库, placeholder: "https://github.com/you/project"}
+        - {key: homepage, type: url, label: 官网}
+        - {key: demo, type: url, label: Demo}
+    - kind: book
+      label: 书
+      dir: books
+      fields:
+        - {key: cover, type: image, label: 封面}
+        - {key: description, type: text, label: 一句话短评}
+        - {key: author, type: string, label: 作者}
+        - {key: rating, type: number, label: 评分, min: 0, max: 5, step: 1}
+        - key: state
+          type: select
+          label: 状态
+          default: finished
+          options:
+            - {value: reading, label: 在读}
+            - {value: finished, label: 读过}
+            - {value: wishlist, label: 想读}
+            - {value: abandoned, label: 弃读}
+        - {key: year, type: string, label: 出版年}
+        - {key: link, type: url, label: 豆瓣链接, placeholder: "https://book.douban.com/subject/..."}
+    - kind: movie
+      label: 影
+      dir: movies
+      fields:
+        - {key: cover, type: image, label: 海报}
+        - {key: description, type: text, label: 一句话短评}
+        - {key: director, type: string, label: 导演}
+        - {key: rating, type: number, label: 评分, min: 0, max: 5, step: 1}
+        - key: state
+          type: select
+          label: 状态
+          default: watched
+          options:
+            - {value: watching, label: 在看}
+            - {value: watched, label: 看过}
+            - {value: wishlist, label: 想看}
+            - {value: abandoned, label: 弃剧}
+        - {key: year, type: string, label: 上映年}
+        - {key: link, type: url, label: 豆瓣链接, placeholder: "https://movie.douban.com/subject/..."}
 
 markdown:
   unsafeHTML: true
@@ -33,7 +96,7 @@ theme:
     nav:
       - {label: 文章, url: /posts/}
       - {label: 项目, url: /projects/}
-      - {label: 豆瓣, url: /douban/}
+      - {label: 书影, url: /books/}
       - {label: 动态, url: /moments/}
       - {label: 关于, url: /about/}
       - {label: 友链, url: /links/}
@@ -48,3 +111,5 @@ theme:
     feed_page: /feed/
     resume_page: /resume/
     card_fallback: tile
+    github_user: kite-plus
+    github_list: stars
