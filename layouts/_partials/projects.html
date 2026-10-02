@@ -1,0 +1,47 @@
+{{- /* Projects grouped by state in the order a reader cares about: active,
+       maintained, experimental, any other, then archived. Within a group
+       they keep the order they come in. Under them, when the site asks, the
+       GitHub user's other repositories, which almanac.js lists.
+       dict: ctx, entries, pages (true when the entries are items of a kind
+       named project rather than a page's front matter) */ -}}
+{{- $c := .ctx -}}
+{{- $entries := .entries -}}
+{{- $pages := .pages -}}
+{{- $s := $c.Site.ThemeSettings -}}
+{{- $lang := $c.Site.Language -}}
+{{- $known := slice "active" "maintained" "experimental" "archived" -}}
+{{- $groups := slice
+  (dict "key" "active" "icon" "rocket")
+  (dict "key" "maintained" "icon" "wrench")
+  (dict "key" "experimental" "icon" "flask")
+  (dict "key" "other" "icon" "folder")
+  (dict "key" "archived" "icon" "archive") -}}
+{{- range $groups }}
+  {{- $key := .key }}
+  {{- $n := 0 }}
+  {{- range $entries }}
+    {{- $state := printf "%s" (partial "project-state.html" (dict "entry" . "pages" $pages)) }}
+    {{- if or (eq $state $key) (and (eq $key "other") (not (coll.In $known $state))) }}{{ $n = math.Add $n 1 }}{{ end }}
+  {{- end }}
+  {{- if gt $n 0 }}
+<section class="space-y-4">
+  <h2 class="eyebrow flex items-center gap-2">
+    {{- partial "icon.html" (dict "name" .icon "class" "size-3.5") }}
+    <span>{{ partial "t.html" (dict "k" (printf "status_%s" $key) "lang" $lang) }}</span>
+    <span class="text-muted-foreground/60">· {{ $n }}</span>
+  </h2>
+  <div class="grid gap-3 md:grid-cols-2">
+    {{- range $entries }}
+      {{- $state := printf "%s" (partial "project-state.html" (dict "entry" . "pages" $pages)) }}
+      {{- if or (eq $state $key) (and (eq $key "other") (not (coll.In $known $state))) }}
+    {{ partial "project-card.html" (dict "entry" . "pages" $pages "site" $c.Site) }}
+      {{- end }}
+    {{- end }}
+  </div>
+</section>
+  {{- end }}
+{{- end }}
+
+{{- if and $s.github_user $s.github_list (ne (printf "%v" $s.github_list) "none") }}
+{{ partial "gh-more.html" (dict "site" $c.Site) }}
+{{- end }}

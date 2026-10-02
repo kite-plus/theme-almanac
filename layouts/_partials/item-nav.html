@@ -1,0 +1,34 @@
+{{- /* The item before and the item after this one in its kind's order, at
+       the foot of its page. dict: page, lang, prev and next (the keys of the
+       words for them) */ -}}
+{{- $lang := .lang -}}
+{{- $prevWord := partial "t.html" (dict "k" .prev "lang" $lang) -}}
+{{- $nextWord := partial "t.html" (dict "k" .next "lang" $lang) -}}
+{{- $prev := .page.Prev -}}
+{{- $next := .page.Next -}}
+{{- if or $prev $next }}
+<nav class="mt-12 grid gap-3 sm:grid-cols-2" aria-label="{{ $prevWord }} / {{ $nextWord }}">
+  {{- with $prev }}
+  <a href="{{ .RelPermalink }}" rel="prev" class="card card-hover group flex min-w-0 items-center gap-3 p-4">
+    <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground/70 transition-colors group-hover:border-brand/40 group-hover:text-brand">
+      {{- partial "icon.html" (dict "name" "chevron-left" "class" "size-4") -}}
+    </span>
+    <span class="min-w-0">
+      <span class="eyebrow block">{{ $prevWord }}</span>
+      <span class="mt-1 block line-clamp-2 text-sm font-medium leading-snug transition-colors group-hover:text-brand">{{ .Title }}</span>
+    </span>
+  </a>
+  {{- end }}
+  {{- with $next }}
+  <a href="{{ .RelPermalink }}" rel="next" class="card card-hover group flex min-w-0 items-center justify-end gap-3 p-4 text-right sm:col-start-2">
+    <span class="min-w-0">
+      <span class="eyebrow block">{{ $nextWord }}</span>
+      <span class="mt-1 block line-clamp-2 text-sm font-medium leading-snug transition-colors group-hover:text-brand">{{ .Title }}</span>
+    </span>
+    <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground/70 transition-colors group-hover:border-brand/40 group-hover:text-brand">
+      {{- partial "icon.html" (dict "name" "chevron-right" "class" "size-4") -}}
+    </span>
+  </a>
+  {{- end }}
+</nav>
+{{- end }}

@@ -1,0 +1,126 @@
+{{- /* A project's own page: its icon, name, state and summary, tech and
+       links; its screenshot; then its text beside a
+       column of facts, from its front matter and, where almanac.js can fetch
+       them, from GitHub, which also fills in a summary, tech and site the
+       project leaves out. An item of a kind named project leads back to the
+       listing and on to the projects beside it.
+       dict: ctx (the page's context), item (true for an item of the kind) */ -}}
+{{- $c := .ctx -}}
+{{- $item := .item -}}
+{{- $p := $c.Page -}}
+{{- $pp := $p.Params -}}
+{{- $s := $c.Site.ThemeSettings -}}
+{{- $lang := $c.Site.Language -}}
+{{- $state := printf "%s" (partial "project-state.html" (dict "entry" $p "pages" true)) -}}
+{{- $tone := index (dict "active" "border-success/25 bg-success/10 text-success" "maintained" "border-brand/20 bg-brand/10 text-brand" "experimental" "border-warning/30 bg-warning/10 text-warning") $state | default "border-transparent bg-muted text-muted-foreground" -}}
+{{- $repo := printf "%v" ($pp.repo | default "") -}}
+{{- $slug := partial "repo-slug.html" $repo -}}
+{{- $fetch := and $slug $s.github_user -}}
+{{- $icon := printf "%s" (partial "pic-src.html" (dict "src" $pp.icon "base" $p.RelPermalink)) -}}
+{{- $cover := printf "%s" (partial "pic-src.html" (dict "src" $pp.cover "base" $p.RelPermalink)) -}}
+{{- $terms := "" -}}
+{{- if $item }}{{ $terms = $p.Terms "tech" }}{{ end -}}
+{{- $dated := not (time.IsZero $p.PublishDate) -}}
+{{ partial "toc.html" $c }}
+<div{{ with $s.github_user }} data-github-user="{{ . }}"{{ end }}>
+<article class="mx-auto max-w-3xl"{{ with $slug }} data-repo="{{ . }}"{{ end }}>
+  {{- if $item }}
+  <a href="{{ url.For "list" "project" }}" class="group mb-8 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-brand">
+    {{- partial "icon.html" (dict "name" "arrow-left" "class" "size-3.5 transition-transform group-hover:-translate-x-0.5") }}
+    {{ partial "t.html" (dict "k" "all_projects" "lang" $lang) }}
+  </a>
+  {{- end }}
+
+  <header class="mb-10 space-y-5">
+    <div class="flex items-center gap-4">
+      {{- partial "project-icon.html" (dict "src" $icon "title" $p.Title "class" "size-14 rounded-2xl text-2xl") }}
+      <div class="min-w-0 space-y-1.5">
+        <span class="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium leading-5 {{ $tone }}">
+          {{- partial "project-state-word.html" (dict "state" $state "lang" $lang) -}}
+        </span>
+        <h1 class="text-3xl font-bold leading-tight tracking-tight md:text-4xl">{{ $p.Title }}</h1>
+      </div>
+    </div>
+    {{- with $p.Description }}
+    <p class="font-serif text-base leading-relaxed text-muted-foreground md:text-lg">{{ . }}</p>
+    {{- else }}{{ if $fetch }}
+    <p data-gh-fill="summary" hidden class="font-serif text-base leading-relaxed text-muted-foreground md:text-lg"></p>
+    {{- end }}{{ end }}
+    {{- partial "tech-chips.html" (dict "terms" $terms "tech" $pp.tech "repo" $fetch) }}
+    {{- if or $repo $pp.homepage $pp.demo $fetch }}
+    <div class="flex flex-wrap gap-2 pt-1">
+      {{- with $repo }}
+      <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+        {{- partial "icon.html" (dict "name" "github" "class" "size-3.5") }}
+        {{ partial "t.html" (dict "k" "repository" "lang" $lang) }}
+      </a>
+      {{- end }}
+      {{- with $pp.homepage }}
+      <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+        {{- partial "icon.html" (dict "name" "external-link" "class" "size-3.5") }}
+        {{ partial "t.html" (dict "k" "visit" "lang" $lang) }}
+      </a>
+      {{- else }}{{ if $fetch }}
+      <a data-gh-fill="homepage" hidden target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+        {{- partial "icon.html" (dict "name" "external-link" "class" "size-3.5") }}
+        {{ partial "t.html" (dict "k" "visit" "lang" $lang) }}
+      </a>
+      {{- end }}{{ end }}
+      {{- with $pp.demo }}
+      <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+        {{- partial "icon.html" (dict "name" "rocket" "class" "size-3.5") }}
+        {{ partial "t.html" (dict "k" "demo" "lang" $lang) }}
+      </a>
+      {{- end }}
+    </div>
+    {{- end }}
+  </header>
+
+  {{- with $cover }}
+  <figure class="project-shot mb-10">
+    <img src="{{ . }}" alt="{{ $p.Title }}" loading="eager" decoding="async">
+  </figure>
+  {{- end }}
+
+  {{- $facts := or $slug $dated }}
+  <div class="border-t border-border pt-8{{ if and $p.Content $facts }} grid gap-8 md:grid-cols-[minmax(0,1fr)_12rem] md:gap-12{{ end }}">
+    {{- if $facts }}
+    <aside class="md:order-2">
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-4 rounded-lg border border-border bg-card p-4 sm:grid-cols-3 {{ if $p.Content }}md:sticky md:top-24 md:grid-cols-1 md:border-0 md:bg-transparent md:p-0{{ else }}md:grid-cols-4{{ end }}">
+        {{- with $slug }}
+        <div class="min-w-0">
+          <dt class="eyebrow">{{ partial "t.html" (dict "k" "repository" "lang" $lang) }}</dt>
+          <dd class="mt-1.5 truncate font-mono text-[12.5px]"><a href="{{ $repo }}" target="_blank" rel="noopener" class="transition-colors hover:text-brand">{{ . }}</a></dd>
+        </div>
+        {{- end }}
+        {{- if $dated }}
+        <div>
+          <dt class="eyebrow">{{ partial "t.html" (dict "k" "since" "lang" $lang) }}</dt>
+          <dd class="mt-1.5 font-mono text-[12.5px] tabular-nums"><time datetime="{{ time.Format "2006-01-02" $p.PublishDate }}">{{ time.Format "2006-01-02" $p.PublishDate }}</time></dd>
+        </div>
+        {{- end }}
+        {{- if $fetch }}
+        {{- range slice (dict "k" "language" "w" "gh_language") (dict "k" "stars" "w" "gh_stars") (dict "k" "forks" "w" "gh_forks") (dict "k" "license" "w" "gh_license") (dict "k" "pushed" "w" "gh_last_push") }}
+        <div data-gh-fact="{{ .k }}" hidden>
+          <dt class="eyebrow">{{ partial "t.html" (dict "k" .w "lang" $lang) }}</dt>
+          <dd data-gh-value class="mt-1.5 font-mono text-[12.5px] tabular-nums"></dd>
+        </div>
+        {{- end }}
+        {{- end }}
+      </dl>
+    </aside>
+    {{- end }}
+    {{- with $p.Content }}
+    <div class="prose-almanac min-w-0 md:order-1">
+      {{ . }}
+    </div>
+    {{- end }}
+  </div>
+
+  {{- if $item }}
+  {{ partial "item-nav.html" (dict "page" $p "lang" $lang "prev" "prev_project" "next" "next_project") }}
+  {{- end }}
+
+  {{ partial "comments.html" $c }}
+</article>
+</div>

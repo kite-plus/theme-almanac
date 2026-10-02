@@ -1,0 +1,52 @@
+{{- /* The listing of a site's books or films, items of a kind named book or
+       movie: tabs between the two shelves, then the items grouped by where
+       the reader is with them, in the order they are listed in. Each leads
+       to its own page.
+
+       cover: cover.jpg       # beside it in its folder, or an address
+       description: A line on it.
+       author: Cal Newport    # director, for a film
+       rating: 5              # 0 to 5
+       state: reading         # finished, wishlist or abandoned; for a film
+                              # watching, watched, wishlist or abandoned
+       year: "2016"
+       link: https://book.douban.com/subject/27056409/
+
+       dict: ctx (the listing's context), kind ("book" or "movie") */ -}}
+{{- $c := .ctx -}}
+{{- $kind := .kind -}}
+{{- $s := $c.Site.ThemeSettings -}}
+{{- $lang := $c.Site.Language -}}
+{{- $order := slice "watching" "watched" "wishlist" "abandoned" -}}
+{{- $intro := $s.movies_intro -}}
+{{- if eq $kind "book" }}{{ $order = slice "reading" "finished" "wishlist" "abandoned" }}{{ $intro = $s.books_intro }}{{ end -}}
+{{- $total := 0 -}}
+{{- with $c.Paginator }}{{ $total = .TotalItems }}{{ end -}}
+<div class="space-y-8">
+  {{- partial "page-header.html" (dict
+      "eyebrow" (partial "t.html" (dict "k" (printf "%ss_label" $kind) "lang" $lang))
+      "title" (partial "page-title.html" $c)
+      "description" ($intro | default (partial "t.html" (dict "k" (printf "%ss_intro" $kind) "lang" $lang)))
+      "meta" (partial "t.html" (dict "k" (printf "%ss_meta" $kind) "lang" $lang "n" $total))) }}
+
+  {{- if and $s.books_page $s.movies_page }}
+  <nav class="tab-list flex flex-wrap items-center gap-1 border-b border-border">
+    {{- range slice "book" "movie" }}
+    {{- $here := eq . $kind }}
+    <a href="{{ url.Rel (index $s (printf "%ss_page" .)) }}" class="tab{{ if $here }} is-active{{ end }}"{{ if $here }} aria-current="page"{{ end }}>
+      {{- partial "icon.html" (dict "name" (index (dict "book" "book-open" "movie" "film") .) "class" "size-4") }}
+      <span>{{ partial "t.html" (dict "k" (printf "%ss" .) "lang" $lang) }}</span>
+      {{- if $here }}<span class="tab-count">{{ $total }}</span>{{ end }}
+    </a>
+    {{- end }}
+  </nav>
+  {{- end }}
+
+  {{- range $order }}
+  {{ partial "shelf-group.html" (dict "ctx" $c "kind" $kind "key" . "known" $order) }}
+  {{- end }}
+  {{- /* Then whatever has no state, or one the theme does not know. */}}
+  {{ partial "shelf-group.html" (dict "ctx" $c "kind" $kind "key" "" "known" $order) }}
+
+  {{- partial "pagination.html" $c }}
+</div>

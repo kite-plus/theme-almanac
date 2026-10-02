@@ -1,0 +1,84 @@
+{{- /* A book's or a film's own page: its cover beside its title, who made
+       it and when, the reader's rating and status and a link to it
+       elsewhere, then what the reader wrote about it, and the ones before
+       and after it on the shelf. dict: ctx (the page's context), kind
+       ("book" or "movie") */ -}}
+{{- $c := .ctx -}}
+{{- $kind := .kind -}}
+{{- $p := $c.Page -}}
+{{- $pp := $p.Params -}}
+{{- $lang := $c.Site.Language -}}
+{{- $by := $pp.director -}}
+{{- if eq $kind "book" }}{{ $by = $pp.author }}{{ end -}}
+{{- $word := partial "shelf-status.html" (dict "kind" $kind "status" (or $pp.state $pp.status) "lang" $lang) -}}
+{{- $cover := printf "%s" (partial "pic-src.html" (dict "src" (or $pp.cover $pp.poster) "base" $p.RelPermalink)) -}}
+{{- $link := printf "%v" ($pp.link | default "") -}}
+{{- $douban := str.Contains "douban.com" $link -}}
+{{- $rated := and $pp.rating (ne (printf "%v" $pp.rating) "0") -}}
+<article class="mx-auto max-w-3xl">
+  <a href="{{ url.For "list" $kind }}" class="group mb-8 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-brand">
+    {{- partial "icon.html" (dict "name" "arrow-left" "class" "size-3.5 transition-transform group-hover:-translate-x-0.5") }}
+    {{ partial "t.html" (dict "k" (printf "all_%ss" $kind) "lang" $lang) }}
+  </a>
+
+  <header class="mb-10 flex flex-col gap-6 border-b border-border pb-10 sm:flex-row sm:items-end sm:gap-8">
+    <div class="shelf-cover shelf-cover--{{ $kind }} w-40 shrink-0 sm:w-48">
+      {{- partial "shelf-cover.html" (dict "src" $cover "title" $p.Title "by" $by "loading" "eager") }}
+    </div>
+    <div class="min-w-0 flex-1 space-y-3">
+      <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+        <span class="text-brand">{{ partial "t.html" (dict "k" (printf "kind_%s" $kind) "lang" $lang) }}</span>
+        {{- with $word }}
+        <span class="text-muted-foreground/50">·</span>
+        <span class="rounded-sm bg-muted px-1.5 py-0.5 text-foreground/75">{{ . }}</span>
+        {{- end }}
+      </div>
+      <h1 class="text-3xl font-bold leading-tight tracking-tight md:text-4xl">{{ $p.Title }}</h1>
+      {{- if or $by $pp.year }}
+      <p class="text-[15px] text-muted-foreground">
+        {{- with $by }}<span class="text-foreground/85">{{ . }}</span>{{ end }}
+        {{- if and $by $pp.year }}<span class="mx-1.5 opacity-40">·</span>{{ end }}
+        {{- with $pp.year }}<span class="font-mono text-[13px] tabular-nums">{{ . }}</span>{{ end -}}
+      </p>
+      {{- end }}
+      <div class="flex items-center gap-2">
+        {{- if $rated }}
+        {{- partial "rating.html" (dict "value" $pp.rating "class" "size-4" "label" true) }}
+        {{- else }}
+        <span class="font-mono text-[11px] text-muted-foreground">{{ partial "t.html" (dict "k" "unrated" "lang" $lang) }}</span>
+        {{- end }}
+      </div>
+      {{- with $p.Description }}
+      <p class="font-serif text-base leading-relaxed text-muted-foreground md:text-[17px]">{{ . }}</p>
+      {{- end }}
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+        {{- with $link }}
+        <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+          {{- if $douban }}
+          {{- partial "icon.html" (dict "name" "douban" "class" "size-3.5") }}
+          {{ partial "t.html" (dict "k" "open_douban" "lang" $lang) }}
+          {{- else }}
+          {{- partial "icon.html" (dict "name" "external-link" "class" "size-3.5") }}
+          {{ partial "t.html" (dict "k" "open_link" "lang" $lang) }}
+          {{- end }}
+        </a>
+        {{- end }}
+        {{- if not (time.IsZero $p.PublishDate) }}
+        <time datetime="{{ time.Format "2006-01-02" $p.PublishDate }}" class="font-mono text-[11px] tabular-nums text-muted-foreground">
+          {{- partial "t.html" (dict "k" "noted_on" "lang" $lang "x" (time.Format "2006-01-02" $p.PublishDate)) -}}
+        </time>
+        {{- end }}
+      </div>
+    </div>
+  </header>
+
+  {{- with $p.Content }}
+  <div class="prose-almanac">
+    {{ . }}
+  </div>
+  {{- end }}
+
+  {{ partial "item-nav.html" (dict "page" $p "lang" $lang "prev" (printf "prev_%s" $kind) "next" (printf "next_%s" $kind)) }}
+
+  {{ partial "comments.html" $c }}
+</article>

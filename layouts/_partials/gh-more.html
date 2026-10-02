@@ -1,0 +1,39 @@
+{{- /* The GitHub user's other repositories under the projects, hidden until
+       almanac.js has fetched them and made a card of each from the template.
+       It sits under an element marked data-github-user. dict: site */ -}}
+{{- $s := .site.ThemeSettings -}}
+{{- $lang := .site.Language -}}
+<section data-gh-more data-gh-sort="{{ $s.github_list }}" data-gh-limit="{{ $s.github_limit | default 6 }}" hidden class="space-y-4">
+  <h2 class="eyebrow flex items-center gap-2">
+    {{- partial "icon.html" (dict "name" "github" "class" "size-3.5") }}
+    <a href="https://github.com/{{ $s.github_user }}?tab=repositories" target="_blank" rel="noopener" class="transition-colors hover:text-brand">{{ partial "t.html" (dict "k" "gh_more" "lang" $lang) }}</a>
+    <span class="text-muted-foreground/60">· <span data-gh-count></span></span>
+  </h2>
+  <div data-gh-list class="grid gap-3 md:grid-cols-2"></div>
+  <template data-gh-card>
+    <article class="card card-hover group relative flex flex-col p-5">
+      <div class="mb-2 flex items-start justify-between gap-3">
+        <h3 class="truncate text-[15px] font-semibold leading-snug tracking-tight">
+          <a data-gh-slot="name" target="_blank" rel="noopener" class="transition-colors before:absolute before:inset-0 group-hover:text-brand"></a>
+        </h3>
+        <span data-gh-slot="archived" hidden class="inline-flex shrink-0 items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <span class="size-1.5 rounded-full bg-muted-foreground"></span>{{ partial "t.html" (dict "k" "status_archived" "lang" $lang) }}
+        </span>
+      </div>
+      <p data-gh-slot="description" class="mb-3 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground"></p>
+      <div data-gh-slot="topics" class="mb-3 flex flex-wrap gap-1.5"></div>
+      <div class="mt-auto flex items-center gap-3 border-t border-border/70 pt-3 font-mono text-[11px] text-muted-foreground">
+        <span class="inline-flex items-center gap-1" title="{{ partial "t.html" (dict "k" "gh_stars" "lang" $lang) }}">
+          {{- partial "icon.html" (dict "name" "star" "class" "size-3") }}<span data-gh-slot="stars" class="tabular-nums"></span>
+        </span>
+        <span class="inline-flex items-center gap-1" title="{{ partial "t.html" (dict "k" "gh_forks" "lang" $lang) }}">
+          {{- partial "icon.html" (dict "name" "git-fork" "class" "size-3") }}<span data-gh-slot="forks" class="tabular-nums"></span>
+        </span>
+        <span data-gh-slot="language-row" class="inline-flex items-center gap-1.5">
+          <span class="size-1.5 rounded-full bg-brand/70"></span><span data-gh-slot="language"></span>
+        </span>
+        <span class="ml-auto shrink-0">{{ partial "t.html" (dict "k" "gh_pushed" "lang" $lang) }} <span data-gh-slot="pushed"></span></span>
+      </div>
+    </article>
+  </template>
+</section>

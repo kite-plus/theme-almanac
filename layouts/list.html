@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{- /* The archive: every post, newest first, under the year it was
-       published in. A year's count is of the posts on this page; a site
-       that wants the whole archive on one page raises build.pageSize. */ -}}
+       published in, all on one page as theme.yaml asks. A site that pages
+       it with build.pagination counts a year's posts on each page. */ -}}
 {{- $lang := .Site.Language -}}
 {{- $total := 0 -}}
 {{- with .Paginator }}{{ $total = .TotalItems }}{{ end -}}

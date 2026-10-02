@@ -1,0 +1,33 @@
+{{- /* One group of a shelf: the books or films with one status, or with
+       none the theme knows when the key is empty. Nothing for a group with
+       no items. dict: ctx (the listing's context), kind, key, known (the
+       statuses the shelf groups by) */ -}}
+{{- $c := .ctx -}}
+{{- $kind := .kind -}}
+{{- $key := .key -}}
+{{- $known := .known -}}
+{{- $lang := $c.Site.Language -}}
+{{- $n := 0 -}}
+{{- range $c.Pages }}
+  {{- $status := printf "%v" (or .Params.state .Params.status | default "") }}
+  {{- if or (and $key (eq $status $key)) (and (not $key) (not (coll.In $known $status))) }}{{ $n = math.Add $n 1 }}{{ end }}
+{{- end -}}
+{{- if gt $n 0 }}
+<section class="space-y-5">
+  <h2 class="eyebrow flex items-center gap-2">
+    <span>{{ with $key }}{{ partial "shelf-status.html" (dict "kind" $kind "status" . "lang" $lang) }}{{ else }}{{ partial "t.html" (dict "k" "status_none" "lang" $lang) }}{{ end }}</span>
+    <span class="text-muted-foreground/60">· {{ $n }}</span>
+  </h2>
+  <div class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 md:gap-x-6 lg:grid-cols-5">
+    {{- range $c.Pages }}
+      {{- $status := printf "%v" (or .Params.state .Params.status | default "") }}
+      {{- if or (and $key (eq $status $key)) (and (not $key) (not (coll.In $known $status))) }}
+        {{- $cover := printf "%s" (partial "pic-src.html" (dict "src" (or .Params.cover .Params.poster) "base" .RelPermalink)) }}
+    {{ partial "shelf-card.html" (dict
+        "kind" $kind "title" .Title "by" (or .Params.author .Params.director) "cover" $cover
+        "rating" .Params.rating "status" $status "summary" .Description "link" .RelPermalink "site" $c.Site) }}
+      {{- end }}
+    {{- end }}
+  </div>
+</section>
+{{- end -}}

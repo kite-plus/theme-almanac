@@ -1,0 +1,29 @@
+{{ define "main" }}
+{{- /* The listing of a kind named project, grouped by state as projects.html
+       draws them, each leading to its own page.
+
+       cover: shot.png        # its page's screenshot, beside it or an address
+       description: What it is, in a line. Left out, GitHub's is shown.
+       icon: icon.svg         # beside its name on its card
+       state: active          # maintained, experimental, archived, or any word
+       tech: [Go, React]      # a taxonomy the kind declares, or a list
+       repo: https://github.com/you/project
+       homepage: https://project.dev
+       demo: https://demo.project.dev
+       weight: 1              # when the kind is ordered by weight */ -}}
+{{- $s := .Site.ThemeSettings -}}
+{{- $lang := .Site.Language -}}
+{{- $total := 0 -}}
+{{- with .Paginator }}{{ $total = .TotalItems }}{{ end -}}
+<div class="space-y-10"{{ with $s.github_user }} data-github-user="{{ . }}"{{ end }}>
+  {{- partial "page-header.html" (dict
+      "eyebrow" (partial "t.html" (dict "k" "projects_label" "lang" $lang))
+      "title" (partial "page-title.html" .)
+      "description" ($s.projects_intro | default (partial "t.html" (dict "k" "projects_intro" "lang" $lang)))
+      "meta" (partial "t.html" (dict "k" "projects_meta" "lang" $lang "n" $total))) }}
+
+  {{ partial "projects.html" (dict "ctx" . "entries" .Pages "pages" true) }}
+
+  {{- partial "pagination.html" . }}
+</div>
+{{ end }}

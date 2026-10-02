@@ -1,7 +1,7 @@
 // What Almanac adds to pages that already work without it: the header over
 // the banner, the reading bar and the table of contents, code blocks,
 // headings, links, tables and pictures in an article, social cards, copy
-// buttons, the Search plugin's buttons and the GitHub numbers of projects.
+// buttons, the Search plugin's buttons and what GitHub says of projects.
 // The words it says come from data-* attributes on <body>.
 (function () {
   "use strict";
@@ -376,72 +376,203 @@
     });
   });
 
-  // ===== GitHub numbers of projects, fetched by the reader's browser =====
+  // ===== Projects on GitHub, fetched by the reader's browser =====
+  // Only under an element marked data-github-user: each repository's
+  // numbers, what a project leaves out (its summary, tech and site), and the
+  // user's other repositories where a projects page asks for them.
   var shelf = document.querySelector("[data-github-user]");
-  if (shelf) githubStats(shelf, shelf.getAttribute("data-github-user"));
+  if (shelf) github(shelf, shelf.getAttribute("data-github-user"));
 
-  function githubStats(shelf, user) {
-    var cards = shelf.querySelectorAll("[data-repo]");
-    if (!user || !cards.length) return;
-    var key = "almanac-github:" + user.toLowerCase();
-    var cached = null;
-    try {
-      cached = JSON.parse(localStorage.getItem(key) || "null");
-    } catch (e) {}
+  function github(shelf, user) {
+    var cards = [].slice.call(shelf.querySelectorAll("[data-repo]"));
+    var more = shelf.querySelector("[data-gh-more]");
+    if (!user || (!cards.length && !more)) return;
+    var API = "https://api.github.com";
+    var owner = user.toLowerCase();
+    var SLUG = /^[\w.-]+\/[\w.-]+$/;
+
     // An hour keeps a reader well under GitHub's 60 anonymous calls an hour.
-    if (cached && Date.now() - cached.at < 3600 * 1000) {
-      fill(cached.repos);
-      return;
-    }
-    fetch("https://api.github.com/users/" + encodeURIComponent(user) + "/repos?per_page=100&type=owner", {
-      headers: { Accept: "application/vnd.github+json" },
-    })
-      .then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.json();
-      })
-      .then(function (list) {
-        if (!Array.isArray(list)) return;
-        var repos = {};
-        list.forEach(function (r) {
-          repos[String(r.full_name).toLowerCase()] = {
-            stars: r.stargazers_count,
-            forks: r.forks_count,
-            language: r.language,
-            pushed: r.pushed_at,
-          };
+    function load(key, url, read) {
+      try {
+        var hit = JSON.parse(localStorage.getItem(key) || "null");
+        if (hit && Date.now() - hit.at < 3600 * 1000) return Promise.resolve(hit.data);
+      } catch (e) {}
+      return fetch(url, { headers: { Accept: "application/vnd.github+json" } })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
+        })
+        .then(function (json) {
+          var data = read(json);
+          try {
+            localStorage.setItem(key, JSON.stringify({ at: Date.now(), data: data }));
+          } catch (e) {}
+          return data;
         });
-        try {
-          localStorage.setItem(key, JSON.stringify({ at: Date.now(), repos: repos }));
-        } catch (e) {}
-        fill(repos);
+    }
+    function repo(r) {
+      var license = r.license && r.license.spdx_id;
+      return {
+        name: r.name,
+        full: String(r.full_name),
+        url: r.html_url,
+        description: r.description || "",
+        stars: r.stargazers_count || 0,
+        forks: r.forks_count || 0,
+        language: r.language || "",
+        topics: r.topics || [],
+        homepage: r.homepage || "",
+        license: license && license !== "NOASSERTION" ? license : "",
+        pushed: r.pushed_at || "",
+        archived: !!r.archived,
+        fork: !!r.fork,
+      };
+    }
+
+    load(
+      "almanac-github-v2:" + owner,
+      API + "/users/" + encodeURIComponent(user) + "/repos?per_page=100&type=owner&sort=pushed",
+      function (list) {
+        return Array.isArray(list) ? list.map(repo) : [];
+      }
+    )
+      .then(function (list) {
+        var mine = {};
+        list.forEach(function (r) {
+          mine[r.full.toLowerCase()] = r;
+        });
+        // A repository of another owner is asked for by itself, a few at most.
+        var asked = {};
+        cards.forEach(function (card) {
+          var slug = card.getAttribute("data-repo").toLowerCase();
+          if (mine[slug]) return fill(card, mine[slug]);
+          if (!SLUG.test(slug)) return;
+          if (!asked[slug]) {
+            if (Object.keys(asked).length >= 8) return;
+            asked[slug] = load("almanac-github-v2:" + slug, API + "/repos/" + slug, repo);
+          }
+          asked[slug]
+            .then(function (r) {
+              fill(card, r);
+            })
+            .catch(function () {});
+        });
+        if (more) listMore(more, list, cards);
       })
       .catch(function () {});
 
-    function fill(repos) {
-      cards.forEach(function (card) {
-        var repo = repos[card.getAttribute("data-repo").toLowerCase()];
-        var row = card.querySelector("[data-gh-row]");
-        if (!repo || !row) return;
+    function count(n) {
+      return n.toLocaleString();
+    }
+    function web(url) {
+      return /^https?:\/\//.test(url) ? url : "";
+    }
+    function chip(text) {
+      var el = document.createElement("span");
+      el.className = "chip";
+      el.textContent = text;
+      return el;
+    }
+
+    function fill(card, r) {
+      var row = card.querySelector("[data-gh-row]");
+      if (row) {
         var shown = false;
-        function set(name, value) {
+        var set = function (name, value) {
           var slot = row.querySelector('[data-gh="' + name + '"]');
           if (!slot) return;
-          if (value === null || value === undefined || value === "" || value === 0) {
-            slot.hidden = true;
-            return;
-          }
-          var text = slot.querySelector("[data-gh-value]") || slot;
-          text.textContent = value;
-          slot.hidden = false;
+          slot.hidden = !value;
+          if (!value) return;
+          (slot.querySelector("[data-gh-value]") || slot).textContent = value;
           shown = true;
-        }
-        set("stars", repo.stars ? repo.stars.toLocaleString() : 0);
-        set("forks", repo.forks ? repo.forks.toLocaleString() : 0);
-        set("language", repo.language);
-        set("pushed", repo.pushed ? repo.pushed.slice(0, 7) : "");
+        };
+        set("stars", r.stars ? count(r.stars) : "");
+        set("forks", r.forks ? count(r.forks) : "");
+        set("language", r.language);
+        set("pushed", r.pushed.slice(0, 7));
         row.hidden = !shown;
+      }
+      var facts = {
+        language: r.language,
+        stars: count(r.stars),
+        forks: count(r.forks),
+        license: r.license,
+        pushed: r.pushed.slice(0, 10),
+      };
+      card.querySelectorAll("[data-gh-fact]").forEach(function (fact) {
+        var value = facts[fact.getAttribute("data-gh-fact")];
+        if (!value) return;
+        fact.querySelector("[data-gh-value]").textContent = value;
+        fact.hidden = false;
       });
+      var summary = card.querySelector('[data-gh-fill="summary"]');
+      if (summary && r.description) {
+        summary.textContent = r.description;
+        summary.hidden = false;
+      }
+      var tech = card.querySelector('[data-gh-fill="tech"]');
+      var words = r.topics.length ? r.topics.slice(0, 6) : r.language ? [r.language] : [];
+      if (tech && words.length && !tech.children.length) {
+        words.forEach(function (w) {
+          tech.appendChild(chip(w));
+        });
+        tech.hidden = false;
+      }
+      var home = card.querySelector('[data-gh-fill="homepage"]');
+      if (home && web(r.homepage)) {
+        home.href = r.homepage;
+        home.hidden = false;
+      }
+    }
+
+    // The user's other repositories: no forks, none already listed, and not
+    // the one that only holds their profile.
+    function listMore(more, list, cards) {
+      var listed = {};
+      cards.forEach(function (card) {
+        listed[card.getAttribute("data-repo").toLowerCase()] = true;
+      });
+      var byPush = more.getAttribute("data-gh-sort") === "pushed";
+      var limit = parseInt(more.getAttribute("data-gh-limit"), 10) || 6;
+      var picked = list
+        .filter(function (r) {
+          var name = r.name.toLowerCase();
+          return !r.fork && !listed[r.full.toLowerCase()] && name !== owner && name !== ".github";
+        })
+        .sort(function (a, b) {
+          if (!byPush && b.stars !== a.stars) return b.stars - a.stars;
+          return a.pushed < b.pushed ? 1 : a.pushed > b.pushed ? -1 : 0;
+        })
+        .slice(0, limit);
+      var template = more.querySelector("template[data-gh-card]");
+      var grid = more.querySelector("[data-gh-list]");
+      if (!picked.length || !template || !grid) return;
+      picked.forEach(function (r) {
+        var card = template.content.firstElementChild.cloneNode(true);
+        var slot = function (name) {
+          return card.querySelector('[data-gh-slot="' + name + '"]');
+        };
+        var name = slot("name");
+        name.textContent = r.name;
+        if (/^https:\/\/github\.com\//.test(r.url)) name.href = r.url;
+        slot("archived").hidden = !r.archived;
+        if (r.description) slot("description").textContent = r.description;
+        else slot("description").remove();
+        if (r.topics.length) {
+          r.topics.slice(0, 4).forEach(function (w) {
+            slot("topics").appendChild(chip(w));
+          });
+        } else slot("topics").remove();
+        slot("stars").textContent = count(r.stars);
+        slot("forks").textContent = count(r.forks);
+        if (r.language) slot("language").textContent = r.language;
+        else slot("language-row").remove();
+        slot("pushed").textContent = r.pushed.slice(0, 7);
+        grid.appendChild(card);
+      });
+      var n = more.querySelector("[data-gh-count]");
+      if (n) n.textContent = picked.length;
+      more.hidden = false;
     }
   }
 })();

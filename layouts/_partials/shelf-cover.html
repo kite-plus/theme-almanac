@@ -1,0 +1,16 @@
+{{- /* The cover of a book or the poster of a film, filling a 2:3 box. With
+       no picture one is drawn in a tone of the title, as a plain edition's
+       cover is. Douban's pictures are only served to pages that send no
+       referrer. dict: src (an address), title, by, loading */ -}}
+{{- if .src }}
+<img src="{{ .src }}" alt="{{ .title }}" loading="{{ .loading | default "lazy" }}" decoding="async" referrerpolicy="no-referrer"
+     class="size-full object-cover">
+{{- else }}
+{{- $tone := str.Split " " (printf "%s" (partial "tone.html" .title)) }}
+<div class="shelf-blank" style="--tone-from: {{ index $tone 0 }}; --tone-to: {{ index $tone 1 }}; --tone-fg: {{ index $tone 2 }};">
+  <span class="shelf-blank__title">{{ .title }}</span>
+  {{- with .by }}
+  <span class="shelf-blank__by">{{ . }}</span>
+  {{- end }}
+</div>
+{{- end -}}

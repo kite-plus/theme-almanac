@@ -174,7 +174,32 @@ theme:
       label: 特殊页面
     github_user:
       label: GitHub 用户
-      help: 用「项目」模板画的页面上，由读者的浏览器从 GitHub 取这个用户各仓库的星标、复刻、语言和最近推送时间。留空就不请求。
+      help: 在项目列表和每个项目自己的页面上，由读者的浏览器从 GitHub 取每个仓库的星标、复刻、语言和最近推送时间；项目没写简介和技术栈时，也用仓库的简介和话题补上。留空就不请求。
+    github_list:
+      label: GitHub 上的更多仓库
+      help: 在项目下面列出这个 GitHub 用户的其他公开仓库，由读者的浏览器去取。复刻来的和已经列出的仓库不算在内。
+      options:
+        none: 不列
+        stars: 星标最多的
+        pushed: 最近推送的
+    github_limit:
+      label: 最多列几个
+      help: 「GitHub 上的更多仓库」最多列出的仓库数。
+    projects_intro:
+      label: 项目列表的介绍
+      help: 站点声明了名为 project 的内容类型时，项目列表标题下的一句话。留空时用主题自己的一句。
+    books_page:
+      label: 书架
+      help: 名为 book 的内容类型的列表地址。和影单都填了时，两边各有一个标签页通向对方；站点没有这种内容类型时清空它。
+    movies_page:
+      label: 影单
+      help: 名为 movie 的内容类型的列表地址。
+    books_intro:
+      label: 书架的介绍
+      help: 书架标题下的一句话。留空时用主题自己的一句。
+    movies_intro:
+      label: 影单的介绍
+      help: 影单标题下的一句话。留空时用主题自己的一句。
     about_page:
       label: 关于页
       help: 首页标题和友链页指向的地址。
@@ -204,13 +229,13 @@ theme:
       description: 个人资料在上，正文在中间，社交链接在下面。
     projects:
       label: 项目
-      description: 页面 front matter 里的项目，按状态分组；设置了 GitHub 用户时显示实时的仓库数据。
+      description: 页面 front matter 里的项目，按状态分组；设置了 GitHub 用户时显示实时的仓库数据。站点声明了名为 project 的内容类型时，不用这个模板也有项目列表。
     project:
       label: 项目详情
       description: 一个项目自己的页面：状态、技术栈、GitHub 数据和链接在上，正文在下。
     douban:
       label: 书影
-      description: 页面 front matter 里的书和电影，分成两个书架。
+      description: 页面 front matter 里的书和电影，分成两个书架。站点声明了名为 book 和 movie 的内容类型时，每本书、每部电影各有自己的页面。
     moments:
       label: 动态
       description: 页面 front matter 里的短动态，按天分组，每条可以是几句话、几张图、一首歌或一段视频。

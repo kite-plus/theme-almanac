@@ -1,0 +1,8 @@
+{{- /* Where a project is: active, maintained, experimental, archived or any
+       word, active when it says none. Kite keeps status for whether an item
+       is published, so an item writes state; an entry of a page's projects
+       may still write status. dict: entry, pages (true for an item) */ -}}
+{{- $state := "" -}}
+{{- if .pages }}{{ $state = or .entry.Params.state .entry.Params.status }}
+{{- else }}{{ $state = or .entry.state .entry.status }}{{ end -}}
+{{- printf "%v" ($state | default "active") -}}

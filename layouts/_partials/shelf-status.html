@@ -1,0 +1,7 @@
+{{- /* The word for where a reader is with a book or a film, or nothing for a
+       status the theme does not know. dict: kind ("book" or "movie"),
+       status, lang */ -}}
+{{- $keys := dict
+  "book" (dict "reading" "status_reading" "finished" "status_finished" "wishlist" "status_book_wishlist" "abandoned" "status_book_abandoned")
+  "movie" (dict "watching" "status_watching" "watched" "status_watched" "wishlist" "status_movie_wishlist" "abandoned" "status_movie_abandoned") -}}
+{{- with index (index $keys .kind) (printf "%v" .status) }}{{ partial "t.html" (dict "k" . "lang" $.lang) }}{{ end -}}

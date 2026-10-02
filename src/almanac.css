@@ -1145,6 +1145,128 @@ html:has(.nav-toggle:checked) {
   outline-offset: 2px;
 }
 
+/* Tabs that are links, between the books and the films. */
+.tab.is-active {
+  color: var(--foreground);
+  border-bottom-color: var(--brand);
+}
+
+/* ===== Books and films on a shelf =====
+   A book has a spine down its left edge; a film's poster is flat. */
+.shelf-cover {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 3px 6px 6px 3px;
+  background-color: var(--muted);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--shadow-color) 8%, transparent),
+    0 1px 2px color-mix(in oklab, var(--shadow-color) 8%, transparent),
+    0 8px 20px -10px color-mix(in oklab, var(--shadow-color) 35%, transparent);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  @variant dark {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, white 10%, transparent),
+      0 8px 20px -10px rgb(0 0 0 / 0.6);
+  }
+}
+.shelf-cover--movie {
+  border-radius: 6px;
+}
+.shelf-cover--book::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0.16) 0%,
+    rgb(255 255 255 / 0.14) 2.5%,
+    rgb(0 0 0 / 0.05) 5%,
+    transparent 9%
+  );
+}
+.group:hover .shelf-cover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--shadow-color) 10%, transparent),
+    0 16px 28px -12px color-mix(in oklab, var(--shadow-color) 40%, transparent);
+}
+.shelf-cover img {
+  transition: transform 0.5s ease;
+}
+
+/* The cover drawn for a book or a film with no picture. */
+.shelf-blank {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 14% 12% 12% 16%;
+  background: linear-gradient(160deg, var(--tone-from) 0%, color-mix(in oklab, var(--tone-to) 55%, var(--tone-from)) 100%);
+  color: var(--tone-fg);
+  @variant dark {
+    background: linear-gradient(160deg, color-mix(in oklab, var(--tone-to) 45%, var(--card)) 0%, color-mix(in oklab, var(--tone-to) 22%, var(--card)) 100%);
+    color: color-mix(in oklab, var(--tone-from) 92%, white);
+  }
+}
+.shelf-cover--movie .shelf-blank {
+  background: linear-gradient(170deg, color-mix(in oklab, var(--tone-to) 70%, black) 0%, color-mix(in oklab, var(--tone-to) 35%, black) 100%);
+  color: color-mix(in oklab, var(--tone-from) 94%, white);
+}
+.shelf-blank__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: clamp(0.8rem, 6cqi + 0.25rem, 1.35rem);
+  font-weight: 600;
+  line-height: 1.3;
+  word-break: break-word;
+}
+.shelf-blank__by {
+  font-size: clamp(0.625rem, 3.5cqi + 0.2rem, 0.8125rem);
+  opacity: 0.72;
+}
+
+/* A project's icon, or its first letter on a tone of its name. */
+.project-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--muted);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+.project-icon--letter {
+  background: linear-gradient(145deg, var(--tone-from), color-mix(in oklab, var(--tone-to) 55%, var(--tone-from)));
+  color: var(--tone-fg);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  @variant dark {
+    background: linear-gradient(145deg, color-mix(in oklab, var(--tone-to) 45%, var(--card)), color-mix(in oklab, var(--tone-to) 22%, var(--card)));
+    color: color-mix(in oklab, var(--tone-from) 92%, white);
+  }
+}
+
+/* A project's screenshot under its heading. */
+.project-shot {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--card);
+  box-shadow: 0 18px 40px -24px color-mix(in oklab, var(--shadow-color) 45%, transparent);
+}
+.project-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ===== Tag cloud: a tag grows with its share of the posts ===== */
 .tag-cloud-item {
   font-size: calc(0.8rem + 0.45rem * var(--count, 1) / var(--max, 1));

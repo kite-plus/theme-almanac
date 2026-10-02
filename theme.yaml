@@ -13,8 +13,14 @@ tags: [blog, personal, portfolio, magazine, dark mode]
 screenshot: screenshot.webp
 
 capabilities: [static, dynamic]
-contentTypes: [post, page]
-taxonomies: [tags, categories]
+contentTypes: [post, page, project, book, movie]
+taxonomies: [tags, categories, tech]
+
+# A listing of posts is the archive, grouped by year, and one of projects,
+# books or films is a shelf grouped by state, so each lists all its items on
+# one page. A site's build.pagination stands in for this.
+pagination:
+  list: 0
 
 menus:
   - name: main
@@ -28,15 +34,15 @@ layouts:
     types: [page]
   - name: projects
     label: Projects
-    description: The projects listed in the page's front matter, grouped by status, with live GitHub numbers when a GitHub user is set.
+    description: The projects listed in the page's front matter, grouped by state, with live GitHub numbers when a GitHub user is set. A site that declares a kind named project lists its projects without it.
     types: [page]
   - name: project
     label: Project
-    description: One project's own page, with its status, tech, GitHub numbers and links over the page's text.
+    description: One project's own page, with its state, tech, GitHub numbers and links over the page's text.
     types: [page]
   - name: douban
     label: Books and films
-    description: The books and films listed in the page's front matter, on two shelves.
+    description: The books and films listed in the page's front matter, on two shelves. A site that declares kinds named book and movie gives each its own page instead.
     types: [page]
   - name: moments
     label: Moments
@@ -300,8 +306,47 @@ settings:
       - key: github_user
         type: string
         label: GitHub user
-        help: On a page drawn with the Projects layout, the stars, forks, language and last push of this user's repositories are fetched by the reader's browser from GitHub. Left empty, nothing is fetched.
+        help: On the projects and on each project's page, the reader's browser fetches from GitHub the stars, forks, language and last push of each repository, and the summary and topics of a project that gives none. Left empty, nothing is fetched.
         placeholder: octocat
+      - key: github_list
+        type: select
+        label: More from GitHub
+        help: Under the projects, the GitHub user's other public repositories, fetched by the reader's browser. Forks and the repositories already listed are left out.
+        default: none
+        options:
+          - {value: none, label: None}
+          - {value: stars, label: The most starred}
+          - {value: pushed, label: The most recently pushed}
+      - key: github_limit
+        type: number
+        label: How many more
+        help: At most this many repositories under More from GitHub.
+        default: 6
+        min: 1
+        max: 30
+        step: 1
+      - key: projects_intro
+        type: text
+        label: About the projects
+        help: A line under the title of the projects, for a site with a kind named project. Left empty, the theme says a line of its own.
+      - key: books_page
+        type: url
+        label: Books
+        help: The listing of a kind named book. With the films' listing, each shows a tab that leads to the other; clear one when the site has no such kind.
+        default: /books/
+      - key: movies_page
+        type: url
+        label: Films
+        help: The listing of a kind named movie.
+        default: /movies/
+      - key: books_intro
+        type: text
+        label: About the books
+        help: A line under the title of the books. Left empty, the theme says a line of its own.
+      - key: movies_intro
+        type: text
+        label: About the films
+        help: A line under the title of the films. Left empty, the theme says a line of its own.
       - key: about_page
         type: url
         label: About page

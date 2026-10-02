@@ -1,7 +1,9 @@
 {{ define "main" }}
 {{- /* Books and films, from the page's front matter, on two shelves the
        reader switches between. The tabs are radio buttons, so they work
-       without a script. Each shelf keeps the order it is written in.
+       without a script. Each shelf keeps the order it is written in. A site
+       that declares kinds named book and movie gives each its own page and
+       a form in the studio instead, drawn by book/ and movie/.
 
        books:
          - title: Deep Work
@@ -47,9 +49,12 @@
 
     <section class="tab-panel pt-6" role="tabpanel">
       {{- if $books }}
-      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
+      <div class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 md:gap-x-6 lg:grid-cols-5">
         {{- range $books }}
-        {{ partial "shelf-card.html" (dict "item" . "kind" "book" "site" $.Site) }}
+        {{ partial "shelf-card.html" (dict
+            "kind" "book" "title" .title "by" (or .author .director) "rating" .rating "status" .status "summary" .summary "badge" true
+            "cover" (printf "%s" (partial "pic-src.html" (dict "src" (or .cover .poster))))
+            "link" (printf "%s" (partial "pic-src.html" (dict "src" .link))) "site" $.Site) }}
         {{- end }}
       </div>
       {{- else }}
@@ -62,9 +67,12 @@
 
     <section class="tab-panel pt-6" role="tabpanel">
       {{- if $movies }}
-      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
+      <div class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 md:gap-x-6 lg:grid-cols-5">
         {{- range $movies }}
-        {{ partial "shelf-card.html" (dict "item" . "kind" "movie" "site" $.Site) }}
+        {{ partial "shelf-card.html" (dict
+            "kind" "movie" "title" .title "by" (or .author .director) "rating" .rating "status" .status "summary" .summary "badge" true
+            "cover" (printf "%s" (partial "pic-src.html" (dict "src" (or .cover .poster))))
+            "link" (printf "%s" (partial "pic-src.html" (dict "src" .link))) "site" $.Site) }}
         {{- end }}
       </div>
       {{- else }}

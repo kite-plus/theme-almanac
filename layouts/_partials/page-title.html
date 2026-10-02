@@ -7,6 +7,9 @@
 {{- else if eq $kind "home" }}{{ .Site.Title }}
 {{- else if and (eq $kind "list") (eq .Page.Type "post") }}{{ partial "t.html" (dict "k" "posts" "lang" $lang) }}
 {{- else if and (eq $kind "list") (eq .Page.Type "page") }}{{ partial "t.html" (dict "k" "pages" "lang" $lang) }}
+{{- else if and (eq $kind "list") (eq .Page.Type "project") }}{{ partial "t.html" (dict "k" "projects_title" "lang" $lang) }}
+{{- else if and (eq $kind "list") (eq .Page.Type "book") }}{{ partial "t.html" (dict "k" "books_title" "lang" $lang) }}
+{{- else if and (eq $kind "list") (eq .Page.Type "movie") }}{{ partial "t.html" (dict "k" "movies_title" "lang" $lang) }}
 {{- else if and (eq $kind "taxonomy") (eq .Page.Type "tags") }}{{ partial "t.html" (dict "k" "tags" "lang" $lang) }}
 {{- else if and (eq $kind "taxonomy") (eq .Page.Type "categories") }}{{ partial "t.html" (dict "k" "categories" "lang" $lang) }}
 {{- else if and (eq $kind "term") (eq .Page.Type "tags") }}#{{ .Page.Title }}

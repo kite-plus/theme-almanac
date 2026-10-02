@@ -1,0 +1,17 @@
+{{- /* A project's tech as chips: the terms of its tech taxonomy, else a list
+       in its front matter, else one line separated by commas. With none and
+       a GitHub repository, an empty row almanac.js fills with its topics.
+       dict: terms, tech, repo (true when there is one), class */ -}}
+{{- $tech := .tech -}}
+{{- if eq (printf "%T" $tech) "string" }}{{ $tech = str.Split "," $tech }}{{ end -}}
+{{- if .terms }}
+<div class="flex flex-wrap gap-1.5 {{ .class }}">
+  {{- range .terms }}<span class="chip">{{ .Name }}</span>{{ end -}}
+</div>
+{{- else if $tech }}
+<div class="flex flex-wrap gap-1.5 {{ .class }}">
+  {{- range $tech }}{{ with str.Trim (printf "%v" .) }}<span class="chip">{{ . }}</span>{{ end }}{{ end -}}
+</div>
+{{- else if .repo }}
+<div data-gh-fill="tech" hidden class="flex flex-wrap gap-1.5 {{ .class }}"></div>
+{{- end -}}

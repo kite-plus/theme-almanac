@@ -1,0 +1,5 @@
+{{- /* The word for a project's state, or the state itself for one the theme
+       does not know. dict: state, lang */ -}}
+{{- with index (dict "active" "status_active" "maintained" "status_maintained" "experimental" "status_experimental" "archived" "status_archived") .state -}}
+  {{- partial "t.html" (dict "k" . "lang" $.lang) -}}
+{{- else }}{{ .state }}{{ end -}}
