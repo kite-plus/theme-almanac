@@ -24,7 +24,8 @@
 | 文章 | 分类、标题、日期 / 阅读时间 / 字数 / 更新日期、正文、标签、上一篇和下一篇、评论位；宽屏时旁边有目录，标题滚出屏幕后页头下方出现阅读条 |
 | 归档 | `/posts/`，按年分组，跟随分页；想一页看全，调大 `build.pageSize` |
 | 标签和分类 | 标签云的字号随文章数变化，由 CSS 从 `--count` / `--max` 算出；分类画成卡片 |
-| 特殊页面 | 页面在 front matter 里写 `layout`：`about`、`projects`、`project`、`douban`、`moments`、`links`、`resume`、`feed`、`search`。要画的数据写在同一个页面的 front matter 里，每个布局的模板开头列着它读的字段 |
+| 项目、书、电影 | 站点在 `kite.yaml` 里声明名为 `project`、`book`、`movie` 的内容类型（Kite 0.1.3 起），每一条是一个文件，后台有表单。列表 `/projects/`、`/books/`、`/movies/` 按状态分组，书和电影的列表之间有标签页互通；每一条有自己的页面：项目是图标、状态、简介、技术栈、链接、截图，正文旁边一栏仓库数据；书和电影是封面在左、作者或导演、年份、评分、状态和豆瓣链接在右，正文是读后感，底下是上一本、下一本。状态写在 `state` 里，因为 `status` 是 Kite 的发布状态 |
+| 特殊页面 | 页面在 front matter 里写 `layout`：`about`、`projects`、`project`、`douban`、`moments`、`links`、`resume`、`feed`、`search`。要画的数据写在同一个页面的 front matter 里，每个布局的模板开头列着它读的字段。`projects`、`project`、`douban` 留给还没改用内容类型的站点 |
 | 404 | 回首页，装了搜索插件时还能直接搜 |
 
 ## 3. 设置
@@ -37,7 +38,7 @@
 | 社交 | 社交链接：平台（28 个预设加「其他」）、地址、名称、图标、二维码、账号、说明、隐藏 |
 | 首页 | 首页文章数、没有封面的文章画成什么样 |
 | 文章 | 阅读时间、字数、更新日期、目录、阅读条 |
-| 特殊页面 | GitHub 用户、关于页、简历页 |
+| 特殊页面 | GitHub 用户、GitHub 上的更多仓库（不列、Star 最多、最近推送）和最多列几个、关于页、简历页、项目列表的介绍、书架和影单的地址与介绍 |
 | 页脚 | ICP 备案号、版权、是否注明 Kite 和 Almanac |
 
 站点的作者和描述直接用 Kite 的 `site.author`、`site.description`，不在主题里重复。
@@ -48,11 +49,12 @@
 - **颜色 token 是完整的颜色**：`--brand: hsl(15 55% 53%)` 这样写，透明度一律用 `color-mix()`。强调色因此能在后台换，主题只在它不是默认值时写一段 `--accent-color`，夜里的颜色由它调亮得到。
 - **夜间模式不依赖脚本**：`prefers-color-scheme` 加 `<html>` 上的 `data-theme`，自定义的 `dark` variant 两种都认，没有脚本时也跟随系统。页头的按钮在白天、夜晚、跟随系统之间切换，选择存在 `localStorage` 的 `kite-theme` 里，和 Kite 的其他主题共用；有 view transition 的浏览器里新配色从按钮处画圆铺开。
 - **不靠脚本也能用**：后台的整站预览不运行主题脚本。手机菜单是一个复选框，社交二维码卡片是 `<details>`，书影的两个书架用单选按钮切换。
-- **脚本只做增强**：`static/almanac/almanac.js` 负责页头在横幅上滚动后变实、阅读条和进度、目录跟随、代码块的语言栏和复制按钮、标题锚点、外链标记、宽表格横向滚动、看图器、复制按钮，以及项目卡片的 GitHub 数据。
+- **脚本只做增强**：`static/almanac/almanac.js` 负责页头在横幅上滚动后变实、阅读条和进度、目录跟随、代码块的语言栏和复制按钮、标题锚点、外链标记、宽表格横向滚动、看图器、复制按钮，以及项目的 GitHub 数据：Star、Fork、语言、许可证和最近提交，项目没写的简介、技术栈和官网用仓库的简介、话题和主页补上，「GitHub 上的更多仓库」按页面里的 `<template>` 画卡片。GitHub 返回的文字一律用 `textContent` 写进去。用户自己的仓库一次请求取完，别人的仓库单独请求，每页最多 8 个。
 - **样式表预先编译**：`src/almanac.css` 用 Tailwind CSS v4 写，编译成 `static/almanac/almanac.css` 提交进仓库，站点不需要 Node。由值拼出来的 class 写进 `@source inline()`。
 - **搜索和评论交给官方插件**：站点装了 [plugin-search](https://github.com/kite-plus/plugin-search) 时，页头出现搜索框，点开是插件的全文搜索，插件自己的浮动按钮不再出现；[plugin-comments](https://github.com/kite-plus/plugin-comments) 把评论放进主题留的 `data-kite-comments`，Waline 的配色绑到主题的颜色上。
 - **不请求第三方**：字体默认用读者设备上的，打开 `web_fonts` 才加载 Google Fonts，而且不阻塞渲染。项目的 GitHub 数据由读者的浏览器去取（构建不能联网），只在设置了 `github_user` 时才取，缓存一小时。
 - **主题自己说的字**都在 `_partials/t.html`：站点语言以 `zh` 开头用中文，其余用英文。后台里主题的中文在 `i18n/zh-CN.yaml`。
+- **卡片的封面**：封面铺满卡片的一边，没有内边距和第二层边框。按图片是什么来画：照片铺满；Logo 放在一块纸色的底板上，图片用 `mix-blend-mode: multiply` 把自带的白底融进底板，不再是「色块里套白卡片再套 Logo」；截图像一张纸从按标签取色的底上升起来，露出顶部。`coverTint` 给底板或底色上色。
 - **没有封面的卡片**：没写 `cover` 时用正文里的第一张图（`.Images`）。写了 `cover: false`，或者正文里也没有图，就画成纯文字的 compact 卡；设置「用第一个标签画一块封面」时，画成按标签取色的渐变色块。分享图也按同样的顺序取，最后退回站点分享图和头像。
 
 ## 5. 对 Kite 的依赖
@@ -62,11 +64,11 @@
 | # | Kite 要做的 | 现状 | 对主题的影响 |
 |---|---|---|---|
 | K1 | **列表里的页面带上 front matter**（见 §6） | Kite 0.1.2 已修复（[kite#1](https://github.com/kite-plus/kite/issues/1)）；0.1.1 的列表和上一篇、下一篇只有标题、slug、摘要、日期和分类，`Params` 是空的，字数也没有 | 首页和标签页的卡片靠它画封面和阅读时间，`cardSize` 才起作用；同一版还加了正文图片 `.Images`，没写封面的文章用它的第一张。主题因此要求 Kite 0.1.2 |
-| K2 | **站点声明的内容类型** | 只有 post 和 page | 项目、书影、动态写在一个页面的 front matter 里。项目的详情页用 `project` 布局另建一个页面，地址是 `/名字/` 这样的一层，同样的状态、技术栈和链接要在两处各写一遍。和风标的 T1 是同一件事 |
+| K2 | **站点声明的内容类型** | Kite 0.1.3 已有：`kite.yaml` 的 `content.types` | 主题画名为 `project`、`book`、`movie` 的内容类型，每条一个文件、一个表单、一个页面，同样的数据不用再写两遍。内容类型由站点声明，主题没法替站点声明，所以 README 给出一段照抄的配置。动态还写在页面的 front matter 里 |
 | K3 | **发布 bundle 子目录里的文件**（见 §6） | Kite 0.1.2 已修复（[kite#2](https://github.com/kite-plus/kite/issues/2)）；0.1.1 只发布 bundle 顶层的文件 | 放在 `images/` 这类子目录里的图片和视频照常发布 |
 | K4 | **中文标题的锚点**（见 §6） | Kite 0.1.2 已修复（[kite#3](https://github.com/kite-plus/kite/issues/3)）；0.1.1 的自动 id 只保留 ASCII，中文标题得到 `heading`、`heading-1`…… | 锚点就是标题的文字；目录脚本先 `decodeURIComponent` 再找标题，不用改 |
 | K5 | **`aliases` 发布跳转页** | Kite 0.1.2 已修复（[kite#4](https://github.com/kite-plus/kite/issues/4)）：每个别名发布一个跳转页 | 改过地址的文章，旧地址跳到新地址 |
-| K6 | **图片处理** | 无（Kite 设计文档里是 M5） | 没有 WebP 多档和 `srcset`，图片按上传的原样输出 |
+| K6 | **图片处理** | Kite 0.1.3 已有 `img.*`，只处理 bundle 里的图 | 主题还没用：封面可以是外部地址，做图出错会让整次构建失败。卡片封面以后可以先缩小再发布 |
 | K7 | **模板里的 `T`** | 无 | 用 `t.html` 代替，同风标 T5 |
 | K8 | **整数运算、类型转换** | Kite 0.1.2 已修复（[kite#12](https://github.com/kite-plus/kite/issues/12)）：参数都是整数时结果是整数，`coll.*` 接受任意列表，有 `math.Int`、`math.Float`；0.1.1 的 `math.*` 只收浮点数 | 主题仍从 `0.0` 开始计数、按字符串比较首页条数，标签云的字号交给 CSS `calc()`；这些写法可以换掉。同风标 §11 第 6、7 项 |
 | K9 | **front matter 列表里的日期** | Kite 0.1.2 已修复（[kite#6](https://github.com/kite-plus/kite/issues/6)）：到模板里是时间，另有 `time.AsTime`；0.1.1 里是字符串 | 动态仍按长度识别几种写法再解析，可以换成直接格式化时间 |

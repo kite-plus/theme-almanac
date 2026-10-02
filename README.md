@@ -23,9 +23,12 @@ build and write.
   were updated, a table of contents beside them on a wide screen, and a bar
   under the header that shows how far a reader has read.
 - **An archive** at `/posts/`, grouped by year, and tag and category pages.
+- **Projects, books and films**, each a file of its own with a form in the
+  studio and a page of its own, listed on shelves grouped by where each one
+  is, with a project's stars, summary and topics fetched from GitHub.
 - **Special pages**, each a page that names a layout in its front matter:
-  about, projects, books and films, moments, friend links, a resume that
-  prints on A4, a page to subscribe and a page to search.
+  about, moments, friend links, a resume that prints on A4, a page to
+  subscribe and a page to search.
 - **Code blocks** with a bar that names the language and a button that copies
   the code, headings with anchors, pictures that open in a viewer, and tables
   that scroll.
@@ -52,6 +55,108 @@ icon in the menu of a narrow screen, as `params: {icon: book-open}`, and
 otherwise one is guessed from its address. Until the site writes a main menu,
 the header shows the links set under Navigation.
 
+### Projects, books and films
+
+A site declares them in `kite.yaml` as kinds of content of its own, which
+Kite 0.1.3 and later read, and Almanac draws the kinds named `project`,
+`book` and `movie`. Each item is then a file under `content/projects/`,
+`content/books/` or `content/movies/`, with a form in the studio, a page of
+its own and a place in a listing at `/projects/`, `/books/` or `/movies/`:
+
+```yaml
+content:
+  types:
+    - kind: project
+      label: Projects
+      dir: projects
+      order: weight              # by each one's weight, smallest first
+      taxonomies: [tech]         # tech as chips in the editor
+      fields:
+        - {key: cover, type: image, label: Screenshot}
+        - {key: description, type: text, label: Summary, help: Left empty, the repository's own is shown.}
+        - {key: icon, type: image, label: Icon}
+        - key: state
+          type: select
+          label: State
+          default: active
+          options:
+            - {value: active, label: Active}
+            - {value: maintained, label: Maintained}
+            - {value: experimental, label: Experimental}
+            - {value: archived, label: Archived}
+        - {key: repo, type: url, label: Repository}
+        - {key: homepage, type: url, label: Website}
+        - {key: demo, type: url, label: Demo}
+    - kind: book
+      label: Books
+      dir: books
+      fields:
+        - {key: cover, type: image, label: Cover}
+        - {key: description, type: text, label: A line on it}
+        - {key: author, type: string, label: Author}
+        - {key: rating, type: number, label: Rating, min: 0, max: 5, step: 1}
+        - key: state
+          type: select
+          label: State
+          default: finished
+          options:
+            - {value: reading, label: Reading}
+            - {value: finished, label: Finished}
+            - {value: wishlist, label: Want to read}
+            - {value: abandoned, label: Abandoned}
+        - {key: year, type: string, label: Year}
+        - {key: link, type: url, label: Link, placeholder: "https://book.douban.com/subject/..."}
+    - kind: movie
+      label: Films
+      dir: movies
+      fields:
+        - {key: cover, type: image, label: Poster}
+        - {key: description, type: text, label: A line on it}
+        - {key: director, type: string, label: Director}
+        - {key: rating, type: number, label: Rating, min: 0, max: 5, step: 1}
+        - key: state
+          type: select
+          label: State
+          default: watched
+          options:
+            - {value: watching, label: Watching}
+            - {value: watched, label: Watched}
+            - {value: wishlist, label: Want to watch}
+            - {value: abandoned, label: Abandoned}
+        - {key: year, type: string, label: Year}
+        - {key: link, type: url, label: Link, placeholder: "https://movie.douban.com/subject/..."}
+```
+
+To add a book, open **Books** in the studio and make a new one: drop its
+cover on the space above the title, write a line on it under the title, set
+its author, rating and state in the chips under that, and write what you
+made of it in the text. The day it is published is the day it is noted. A
+film is added the same way under **Films**, and a project under
+**Projects**. The labels are the site's own, in its own language; the
+[example site's kite.yaml](example/kite.yaml) writes them in Chinese.
+
+The books and the films are grouped by state, and each listing has a tab
+that leads to the other, set as Books and Films under Special pages. A
+picture of a cover may be an address, such as one of Douban's, which is
+asked for without a referrer as Douban requires; a book with no cover is
+given one drawn in a tone of its title. Projects are grouped by state too.
+Kite keeps `status` for whether an item is published, so these write
+`state`.
+
+With a GitHub user set under Special pages, the reader's browser asks GitHub
+for each project's stars, forks, language, license and last push, and fills
+in the summary, the tech and the website a project leaves out from its
+repository's description, topics and homepage, so a project can be as short
+as a title and a repository. More from GitHub lists the user's other public
+repositories under the projects, the most starred or the most recently
+pushed. What GitHub says is kept in the reader's browser for an hour, and
+nothing is asked of it while no user is set.
+
+A site that kept its projects, books and films in a page's front matter
+moves each entry to a file of its own, and takes away the page whose
+address the listing now has, such as a projects page at `/projects/`. The
+`projects`, `project` and `douban` layouts still draw such pages.
+
 ### Special pages
 
 A page chooses a layout in its front matter, or from the Template menu in the
@@ -60,8 +165,8 @@ editor. The data a layout draws is written in the same front matter:
 | Layout | Draws | Front matter |
 |---|---|---|
 | `about` | Your profile over the page's text, and your social links | none |
-| `projects` | Projects grouped by status, with GitHub numbers when `github_user` is set | `projects` |
-| `project` | One project's own page, which a projects entry can lead to with `link` | `status`, `summary`, `tech`, `repo`, `homepage`, `demo` |
+| `projects` | Projects grouped by state, with what GitHub says of them when `github_user` is set | `projects` |
+| `project` | One project's own page, which a projects entry can lead to with `link` | `state`, `summary`, `tech`, `icon`, `cover`, `repo`, `homepage`, `demo` |
 | `douban` | Books and films on two shelves | `books`, `movies` |
 | `moments` | Short entries grouped by day | `moments` |
 | `links` | Your site's card to copy, how to ask for a link, and the links | `groups`, `apply` |
@@ -77,7 +182,7 @@ title: Projects
 layout: projects
 projects:
   - title: fluxa
-    status: active          # maintained, experimental, archived, or any word
+    state: active           # maintained, experimental, archived, or any word
     summary: A self-hosted gateway for AI models.
     tech: [Go, TypeScript]
     repo: https://github.com/you/fluxa
@@ -86,17 +191,29 @@ projects:
 ```
 
 Each layout's template starts with the full list of what it reads, and
-[the example site](example/content/pages) has a page for each.
+[the example site](example/content/pages) has a page for most of them.
 
 ### Writing
 
 A post can ask for the card it is drawn with on the home page with
 `cardSize`: `feature`, `standard`, `right`, `compact` or `note`, and give a
-`cover`, a picture beside it in its folder or an address. The cover's
-`coverMedium` is `photo`, `logo` or `shot`. A post that names no cover is
-drawn with the first picture of its text, and one with `cover: false`, which
-is what the No cover button in Kite's editor writes, with none. Both need
-Kite 0.1.2 or later, whose listings carry a post's front matter.
+`cover`, a picture beside it in its folder or an address. A post that names
+no cover is drawn with the first picture of its text, and one with
+`cover: false`, which is what the No cover button in Kite's editor writes,
+with none.
+
+A cover runs to the edges of its card, drawn by what it is, which
+`coverMedium` says:
+
+- `photo` fills the frame.
+- `logo` sits on a plate, and the white box a logo is often drawn on melts
+  into it.
+- `shot`, a screenshot or a tall picture, rises as a sheet from a tinted
+  ground, its top in view.
+
+Left out, an SVG or a cover with `coverFit: contain` is a logo and anything
+else a photo. `coverTint` colors the plate of a logo or the ground of a
+shot; a pale color suits a plate.
 
 Pictures in a grid, a grid of logos and players from Bilibili, YouTube or
 NetEase Cloud Music are written as HTML in a post, which needs
