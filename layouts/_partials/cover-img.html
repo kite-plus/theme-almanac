@@ -1,0 +1,2 @@
+{{- /* The picture of a cover. dict: src, alt, class, loading, fetchpriority */ -}}
+<img src="{{ .src }}" alt="{{ .alt }}" loading="{{ .loading | default "lazy" }}" decoding="async"{{ with .fetchpriority }} fetchpriority="{{ . }}"{{ end }} class="{{ .class }}">

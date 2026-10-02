@@ -1,5 +1,5 @@
-{{- /* The standard card turned around: the text on the left, the 4:3 cover
-       on the right. dict: page, site */ -}}
+{{- /* The standard card turned around: the text on the left, the cover
+       down the right edge. dict: page, site */ -}}
 {{- $p := .page -}}
 <article class="card card-hover group overflow-hidden">
   <a href="{{ $p.RelPermalink }}" class="flex min-h-36">
@@ -13,8 +13,8 @@
       </div>
       {{- partial "card-tags.html" (dict "page" $p "limit" 4 "class" "mt-2.5") }}
     </div>
-    <div class="w-36 shrink-0 p-2.5 pl-0 sm:w-48">
-      <div class="aspect-[4/3] w-full">{{ partial "post-cover.html" . }}</div>
+    <div class="relative w-28 shrink-0 border-l border-border/70 sm:w-52">
+      <div class="absolute inset-0">{{ partial "post-cover.html" . }}</div>
     </div>
   </a>
 </article>

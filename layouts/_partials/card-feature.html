@@ -6,9 +6,7 @@
 {{- $lang := .site.Language -}}
 <article class="card card-hover group overflow-hidden">
   <a href="{{ $p.RelPermalink }}" class="block">
-    <div class="p-2.5 pb-0">
-      <div class="aspect-[16/9] w-full">{{ partial "post-cover.html" (dict "page" $p "site" .site "loading" "eager" "fetchpriority" "high") }}</div>
-    </div>
+    <div class="aspect-[16/9] w-full border-b border-border/70">{{ partial "post-cover.html" (dict "page" $p "site" .site "loading" "eager" "fetchpriority" "high") }}</div>
     <div class="space-y-2.5 p-5 pt-4">
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground">
         <span class="inline-flex items-center rounded-sm bg-brand/10 px-1.5 py-0.5 uppercase tracking-wider text-brand">{{ partial "t.html" (dict "k" "featured" "lang" $lang) }}</span>

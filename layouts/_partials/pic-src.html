@@ -1,0 +1,12 @@
+{{- /* The address of a picture written in front matter or a text: a full
+       address as it is, one from the site's root under the site's path, and
+       any other inside the item's own folder. It is printed raw, for a caller
+       to take with printf "%s" into an attribute, which escapes it once.
+       dict: src, base (the item's RelPermalink; left out, the site's root) */ -}}
+{{- $s := printf "%v" (.src | default "") -}}
+{{- $out := "" -}}
+{{- if or (eq $s "") (eq $s "false") }}
+{{- else if or (str.HasPrefix "http://" $s) (str.HasPrefix "https://" $s) (str.HasPrefix "//" $s) }}{{ $out = $s }}
+{{- else if or (str.HasPrefix "/" $s) (not .base) }}{{ $out = url.Rel $s }}
+{{- else }}{{ $out = printf "%s%s" .base (str.TrimPrefix "./" $s) }}{{ end -}}
+{{- $out | safeHTML -}}

@@ -112,14 +112,9 @@
   --brand-foreground: hsl(0 0% 100%);
   --shadow-color: hsl(40 19% 20%);
 
-  /* Brand tiles behind logos, and the inner card that swallows a logo's
-     own white box. */
-  --tile-mix: 12%;
-  --tile-glow: 20%;
-  --tile-edge: 24%;
-  --tile-base: #fbfaf7;
-  --tile-card: #fffffe;
-  --tile-card-shadow: 0 1px 2px color-mix(in oklab, var(--tile) 22%, transparent);
+  /* The paper a logo cover is drawn on. It stays light at night, since
+     most logos are dark marks on white. */
+  --logo-plate: hsl(45 28% 95%);
 
   @variant dark {
     --background: hsl(60 3% 13%);
@@ -148,12 +143,7 @@
     --brand-foreground: hsl(30 20% 8%);
     --shadow-color: hsl(0 0% 0%);
 
-    --tile-mix: 26%;
-    --tile-glow: 30%;
-    --tile-edge: 34%;
-    --tile-base: #2a2a27;
-    --tile-card: #f1efe8;
-    --tile-card-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+    --logo-plate: hsl(45 14% 84%);
   }
 }
 :root[data-theme="light"] {
@@ -1160,23 +1150,79 @@ html:has(.nav-toggle:checked) {
   font-size: calc(0.8rem + 0.45rem * var(--count, 1) / var(--max, 1));
 }
 
-/* ===== Brand cover tiles =====
-   The base takes the logo's color, --tile, set by the card. The pale inner
-   card swallows the white box half of all logos are drawn on. */
-.cover-tile {
-  background-color: color-mix(in oklab, var(--tile) var(--tile-mix), var(--tile-base));
-  background-image: radial-gradient(
-    115% 115% at 28% 18%,
-    color-mix(in oklab, var(--tile) var(--tile-glow), transparent) 0%,
-    transparent 68%
-  );
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tile) var(--tile-edge), transparent);
+/* ===== Covers of cards: a logo, a screenshot or a photo =====
+   Each fills the box a card gives it. */
+.cover-logo,
+.cover-shot,
+.cover-photo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-.cover-tile__card {
-  background-color: var(--tile-card);
+.cover-logo img,
+.cover-shot img,
+.cover-photo img {
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* A logo sits on a plate; multiply melts the white box it is drawn on into
+   the plate, whatever the plate's color. */
+.cover-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16% 14%;
+  background-color: var(--plate, var(--logo-plate));
+}
+.cover-logo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.group:hover .cover-logo__img {
+  transform: scale(1.04);
+}
+
+/* A screenshot rises as a sheet from a ground of its tone, its top in view
+   and the rest running off the bottom. */
+.cover-shot {
+  background:
+    radial-gradient(120% 90% at 50% 0%, var(--tone-from), color-mix(in oklab, var(--tone-to) 40%, var(--tone-from)));
+  @variant dark {
+    background:
+      radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--tone-to) 32%, var(--muted)), color-mix(in oklab, var(--tone-to) 14%, var(--card)));
+  }
+}
+.cover-shot__img {
+  position: absolute;
+  top: 14%;
+  left: 12%;
+  width: 76%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 6px 6px 0 0;
+  background-color: var(--card);
   box-shadow:
-    var(--tile-card-shadow),
-    inset 0 0 0 1px color-mix(in oklab, var(--tile) 12%, transparent);
+    0 0 0 1px color-mix(in oklab, var(--shadow-color) 8%, transparent),
+    0 10px 28px -8px color-mix(in oklab, var(--shadow-color) 30%, transparent);
+}
+.group:hover .cover-shot__img {
+  transform: translateY(-5%);
+}
+
+.cover-photo {
+  background-color: var(--muted);
+}
+.cover-photo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.group:hover .cover-photo__img {
+  transform: scale(1.03);
 }
 
 /* ===== Paper grain over gradient covers and the banner ===== */

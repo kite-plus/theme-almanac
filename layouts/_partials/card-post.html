@@ -1,11 +1,11 @@
-{{- /* The standard card: a 4:3 cover on the left, the text on the right. A
-       minimum height rather than a fixed one keeps a two-line title whole.
-       dict: page, site */ -}}
+{{- /* The standard card: the cover down the left edge, the text on the
+       right. The cover takes the card's height, and a minimum height rather
+       than a fixed one keeps a two-line title whole. dict: page, site */ -}}
 {{- $p := .page -}}
 <article class="card card-hover group overflow-hidden">
   <a href="{{ $p.RelPermalink }}" class="flex min-h-36">
-    <div class="w-36 shrink-0 p-2.5 pr-0 sm:w-48">
-      <div class="aspect-[4/3] w-full">{{ partial "post-cover.html" . }}</div>
+    <div class="relative w-28 shrink-0 border-r border-border/70 sm:w-52">
+      <div class="absolute inset-0">{{ partial "post-cover.html" . }}</div>
     </div>
     <div class="flex min-w-0 flex-1 flex-col justify-between p-4 sm:p-5">
       <div class="min-w-0 space-y-1.5">

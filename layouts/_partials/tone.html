@@ -1,0 +1,21 @@
+{{- /* One of eight warm tones, picked by a word such as a tag or a title:
+       a pale color, a deep one and one for text on them, printed with a
+       space between each, which a caller splits with str.Split " ". Called with
+       the word. */ -}}
+{{- $palette := slice
+  (dict "from" "#f3e3d3" "to" "#c96442" "fg" "#5a2d1a")
+  (dict "from" "#ede9de" "to" "#9c8c6e" "fg" "#3d3929")
+  (dict "from" "#e6e2cf" "to" "#7e8964" "fg" "#2e3322")
+  (dict "from" "#e5dfd3" "to" "#8c7d68" "fg" "#332b1f")
+  (dict "from" "#efe2da" "to" "#b27a5c" "fg" "#4a2a1a")
+  (dict "from" "#e9e4dc" "to" "#7c8fa3" "fg" "#283441")
+  (dict "from" "#f0e3d4" "to" "#a6824c" "fg" "#4d3617")
+  (dict "from" "#e8e2d8" "to" "#9c87f5" "fg" "#2f2b48") -}}
+{{- /* The tone is picked by the sixth hex digit of the word, repeated so a
+       short word has one: templates have no hash, and this digit is the low
+       half of a CJK character's last byte, which varies most. */ -}}
+{{- $word := printf "%v" . -}}
+{{- $hex := printf "%x" (printf "%s%s%s" $word $word $word) -}}
+{{- $digit := str.TrimPrefix (printf "%.5s" $hex) (printf "%.6s" $hex) -}}
+{{- $slot := index (dict "0" 0 "1" 1 "2" 2 "3" 3 "4" 4 "5" 5 "6" 6 "7" 7 "8" 0 "9" 1 "a" 2 "b" 3 "c" 4 "d" 5 "e" 6 "f" 7) $digit | default 0 -}}
+{{- with index $palette $slot }}{{ .from }} {{ .to }} {{ .fg }}{{ end -}}
