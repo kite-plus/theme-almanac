@@ -1,4 +1,8 @@
 {{- /* Where the Comments plugin puts a thread. It stays empty, and so out of
        sight, on a site without the plugin or a page that turned it off.
-       Called with the page's context. */ -}}
-<section class="comments" data-kite-comments data-title="{{ partial "t.html" (dict "k" "comments" "lang" .Site.Language) }}"></section>
+       Called with the page's context. data-accent gives Kite Plus Comments
+       the theme's brand color, as --brand does: the site's accent when it
+       chose one, the palette's deeper terracotta otherwise. */ -}}
+{{- $accent := "#b25334" -}}
+{{- with .Site.ThemeSettings.accent }}{{ if ne (str.Lower .) "#c96442" }}{{ $accent = . }}{{ end }}{{ end -}}
+<section class="comments" data-kite-comments data-accent="{{ $accent }}" data-title="{{ partial "t.html" (dict "k" "comments" "lang" .Site.Language) }}"></section>
